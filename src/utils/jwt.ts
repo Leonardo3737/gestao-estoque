@@ -1,5 +1,5 @@
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import { UserType } from '../dto/user/user.schema';
+import { UserType } from '../dtos/user/user.schema';
 
 export type PayloadType = {
   sub: number;
@@ -39,7 +39,11 @@ export function genJWT({
   return jwt.sign(auxPayload, secret)
 }
 
-export function isJWTValid(token: string): PayloadType | null {
+export function isJWTValid(token?: string): PayloadType | null {
+  if(!token) {
+    return null
+  }
+  
   const secret: string = process.env.JWT_SECRET || 'secret'
 
   try {

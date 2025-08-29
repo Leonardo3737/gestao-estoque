@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
-import { UserType } from "../dto/user/user.schema";
-import { CreateUserType } from "../dto/user/create-user.dto";
 import sequelize from "../config/db-connection";
+import { UserType } from "../dtos/user/user.schema";
+import { CreateUserType } from "../dtos/user/create-user.dto";
 
 
 class User extends Model<UserType, CreateUserType> {

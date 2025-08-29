@@ -1,15 +1,16 @@
-import { AppError } from "../config/errors/app.error";
+import { AppError } from "../errors/app.error";
 import { CreateUserType } from "../dtos/user/create-user.dto";
 import { ListUserDTO, ListUserType } from "../dtos/user/list-user.dto";
 import { UpdateUserType } from "../dtos/user/update-user.dto";
 import { UserAuthType } from "../dtos/user/user-auth.dto";
 import { UserType } from "../dtos/user/user.schema";
 import User from "../models/user.model";
+import { removeUndefined } from "../utils/remove-undefined";
 
 export class UserRepository {
 
   async alterUser(userId: number, newUserData: UpdateUserType): Promise<void> {
-    await User.update({ ...newUserData }, { where: { id: userId } })
+    await User.update({ ...newUserData as any }, { where: { id: userId } })
   }
 
   async createUser(newUser: CreateUserType): Promise<ListUserType> {

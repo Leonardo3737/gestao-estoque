@@ -26,32 +26,12 @@ export class UserController {
       res.status(204).send()
     })
 
-    /**
-    * @swagger
-    * /user:
-    *   get:
-    *     summary: Lista todos os usuários
-    *     tags: [Users]
-    *     responses:
-    *       200:
-    *         description: Lista de usuários
-    */
     app.get(UserController.pathWithId, async (req: Request, res: Response) => {
       const id = getParamsId(req)
       const user = await this.service.listUserById(id)
       res.send(user)
     })
 
-    /**
-   * @swagger
-   * /user:
-   *   get:
-   *     summary: Lista todos os usuários
-   *     tags: [Users]
-   *     responses:
-   *       200:
-   *         description: Lista de usuários
-   */
     app.get(UserController.path + '-infos', async (req: Request, res: Response) => {
       if (!req.user) {
         throw new AppError('unauthorized', 401)
@@ -59,28 +39,7 @@ export class UserController {
       const user = await this.service.listUserById(req.user.sub)
       res.send(user)
     })
-
-
-    /**
-     * @swagger
-     * /user:
-     *   post:
-     *     summary: Cria um usuário
-     *     tags: [Users]
-     *     requestBody:
-     *       required: true
-     *       content:
-     *         application/json:
-     *           schema:
-     *             $ref: '#/components/schemas/UserInput'
-     *     responses:
-     *       201:
-     *         description: Usuário criado
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: '#/components/schemas/User'
-     */
+    
     app.post(UserController.path, async (req: Request, res: Response) => {
       const data = new CreateUserDTO({
         ...req.body
