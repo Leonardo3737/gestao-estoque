@@ -7,8 +7,6 @@ import { getParamsId } from "../utils/get-params-id";
 import { UpdateUserDTO } from "../dtos/user/update-user.dto";
 import { FilterUserDTO } from "../dtos/user/filter-user.dto";
 import { BaseController, EndPointType } from "./base.controller";
-import { RolesEnum } from "../enums/roles.enum";
-
 
 export class UserController extends BaseController {
 
@@ -16,7 +14,7 @@ export class UserController extends BaseController {
     private app: Application,
     private service: UserService
   ) {
-    super({ app })
+    super(app)
   }
 
   protected basePath() {
@@ -52,7 +50,33 @@ export class UserController extends BaseController {
     ]
   }
 
-
+  protected defaultEndPoints(): EndPointType[] {
+    return [
+      {
+        path: '/infos',
+        method: 'get',
+        handle: async (req: Request, res: Response) => {
+          if (!req.user) {
+            throw new AppError('unauthorized', 401)
+          }
+          const user = await this.service.listUserById(req.user.sub)
+          res.send(user)
+        }
+      },
+      {
+        path: '/:id',
+        method: 'patch',
+        handle: async (req: Request, res: Response) => {
+          const data = new UpdateUserDTO({
+            ...req.body
+          })
+          const userId = getParamsId(req)
+          const newUser = await this.service.alterUser(userId, data)
+          res.status(204).send(newUser)
+        }
+      },
+    ]
+  }
 
   protected adminEndPoints(): EndPointType[] {
     return [
@@ -84,30 +108,6 @@ export class UserController extends BaseController {
           res.send(user)
         }
       },
-      {
-        path: '/infos',
-        method: 'get',
-        handle: async (req: Request, res: Response) => {
-          if (!req.user) {
-            throw new AppError('unauthorized', 401)
-          }
-          const user = await this.service.listUserById(req.user.sub)
-          res.send(user)
-        }
-      },
-      {
-        path: '/:id',
-        method: 'patch',
-        handle: async (req: Request, res: Response) => {
-          const data = new UpdateUserDTO({
-            ...req.body
-          })
-          const userId = getParamsId(req)
-          const newUser = await this.service.alterUser(userId, data)
-          res.status(204).send(newUser)
-        }
-      },
-
     ]
   }
 }

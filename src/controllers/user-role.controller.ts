@@ -11,15 +11,12 @@ export class UserRoleController extends BaseController {
     private app: Application,
     private service: UserRolesService
   ) {
-    super({
-      app
-    })
+    super(app)
   }
 
   protected basePath() {
     return '/user-role'
   }
-
 
   protected operatorEndPoints(): EndPointType[] {
     return [

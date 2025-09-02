@@ -82,7 +82,7 @@ export class UserService {
 
     const token = genJWT({
       payload: user,
-      expiresDay: 7
+      expiresDay: 100
     })
     return token
   }

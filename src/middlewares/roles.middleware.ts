@@ -4,24 +4,47 @@ import { getParamsId } from "../utils/get-params-id";
 import { UserRepository } from "../repositories/user.repository";
 import { AppError } from "../errors/app.error";
 
-export function rolesMiddleware(role?: RolesEnum) {
+export function rolesMiddleware(role?: RolesEnum, path?: string) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.sub
     if (!userId) {
       throw new AppError('You are not allowed to access this resource', 403, 'FORBIDDEN');
     }
-    console.log(role)
+    
     const userRepository = new UserRepository()
     const user = await userRepository.listUserById(userId)
-    
-    if(!user) {
-      throw new AppError('You are not allowed to access this resource', 403, 'FORBIDDEN');
+
+    if (!user) {
+      throw new AppError('token is required', 401, 'UNAUTHORIZED');
     }
 
-    const userRole = user?.roles?.find(u => u.role === role)    
+    const { path: reqPath } = req
+    const pathWithoutQuery = reqPath.split('?')[0]
 
-    if(!userRole) {
+    let isAuthorized: boolean = false
+    let isAdmin: boolean = false
+
+    user?.roles?.forEach(u => {
+      if (u.role === RolesEnum.ADMIN) {
+        isAdmin = true
+      } else if (u.role === role) {
+        isAuthorized = true
+      }
+    })
+
+    if (!isAuthorized && !isAdmin && role) {
       throw new AppError('You are not allowed to access this resource', 403, 'FORBIDDEN');
+    }    
+
+    if (!isAdmin && path === '/user' && pathWithoutQuery?.startsWith('/')) {
+
+      const separedPath = pathWithoutQuery.split('/')
+
+      const paramId = Number(separedPath.find(node => node && !isNaN(Number(node))))
+
+      if (paramId && paramId !== user.id) {
+        throw new AppError('You are not allowed to access this resource', 403, 'FORBIDDEN');
+      }
     }
 
     next()
