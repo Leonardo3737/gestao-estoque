@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { isValidCPF } from "../../utils/validate-cpf";
+import { UserRoleSchema } from "../user-role/user-role.schema";
 
 export const UserSchema = z.object({
   id: z.number(),
@@ -11,6 +12,7 @@ export const UserSchema = z.object({
   ), { message: 'Invalid phone number' }),
   register: z.string().refine(isValidCPF, { message: 'Invalid CPF.' }),
   password: z.string().min(6).max(100),
+  roles: z.lazy(() => z.array(UserRoleSchema)).optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 })

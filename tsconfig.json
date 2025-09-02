@@ -5,25 +5,29 @@
     "moduleResolution": "node",
     "rootDir": "./src",
     "outDir": "./dist",
-    "typeRoots": ["./@types", "./node_modules/@types"],
-
+    "typeRoots": [
+      "./@types",
+      "./node_modules/@types"
+    ],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-
     "strict": true,
     "strictPropertyInitialization": false,
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-
     "isolatedModules": true,
     "moduleDetection": "force"
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

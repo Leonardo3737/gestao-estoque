@@ -2,10 +2,10 @@ import { Application } from "express";
 
 import { UserController } from "../controllers/user.controller";
 
-import { RolesController } from '../controllers/roles.controller';
-import { RolesRepository } from '../repositories/roles.repository';
+import { UserRoleController } from '../controllers/user-role.controller';
+import { UserRoleRepository } from '../repositories/user-role.repository';
 import { UserRepository } from "../repositories/user.repository";
-import { RolesService } from '../services/roles.service';
+import { UserRolesService } from '../services/user-role.service';
 import { UserService } from "../services/user.service";
 
 
@@ -17,8 +17,8 @@ export function controllersStartup(app: Application) {
   new UserController(app, userService)
 
   /* ROLES */
-  const rolesRespository = new RolesRepository()
-  const rolesService = new RolesService(rolesRespository)
-  new RolesController(app, rolesService)
+  const rolesRespository = new UserRoleRepository()
+  const rolesService = new UserRolesService(rolesRespository)
+  new UserRoleController(app, rolesService)
 
 }

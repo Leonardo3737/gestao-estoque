@@ -7,6 +7,9 @@ import { encryptPassword } from "../utils/encrypt"
 import bcrypt from 'bcrypt'
 import { genJWT } from "../utils/jwt"
 import { UpdateUserDTO } from "../dtos/user/update-user.dto"
+import { UserType } from "../dtos/user/user.schema"
+import { FilterUserRoleType } from "../dtos/user-role/filter-user-role.dto"
+import { FilterUserType } from "../dtos/user/filter-user.dto"
 
 export class UserService {
 
@@ -51,6 +54,19 @@ export class UserService {
     return userWithouPassword.getAll()
   }
 
+  async listAllUsers(filters: FilterUserType): Promise<ListUserType[]> {
+    const users = await this.repository.listAllUsers(filters)
+
+    if (!users) {
+      throw new AppError('User not found', 404)
+    }
+
+    
+    const userWithouPassword = users.map(user => new ListUserDTO(user).getAll())
+
+    return userWithouPassword
+  }
+
   async userAuth(auth: UserAuthDTO): Promise<string> {
     const user = await this.repository.listUserByRegister(auth.get('register'))
 
@@ -73,7 +89,7 @@ export class UserService {
 
   private async checkConflict(phone?: string, register?: string) {
     if (phone) {
-      const userWithSamephone = await this.repository.listUser({ phone })
+      const userWithSamephone = await this.repository.listAllUsers({ phone })
 
       if (userWithSamephone?.length){        
         throw new AppError('There is already a user with this phone', 409)
@@ -81,7 +97,7 @@ export class UserService {
     }
     
     if (register) {
-      const userWithSameRegister = await this.repository.listUser({ register })
+      const userWithSameRegister = await this.repository.listAllUsers({ register })
       
       if (userWithSameRegister?.length) {
         throw new AppError('There is already a user with this register', 409)

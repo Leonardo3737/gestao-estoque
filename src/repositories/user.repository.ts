@@ -6,6 +6,8 @@ import { UserAuthType } from "../dtos/user/user-auth.dto";
 import { UserType } from "../dtos/user/user.schema";
 import User from "../models/user.model";
 import { removeUndefined } from "../utils/remove-undefined";
+import { FilterUserRoleType } from "../dtos/user-role/filter-user-role.dto";
+import { FilterUserType } from "../dtos/user/filter-user.dto";
 
 export class UserRepository {
 
@@ -37,12 +39,17 @@ export class UserRepository {
   }
 
   async listUserById(id: number): Promise<UserType | null> {
-    const user = await User.findByPk(id)
+    const user = await User.findByPk(
+      id,
+      {
+        include: { association: 'roles' },
+      })
     return user
   }
 
   async listUserByRegister(register: string): Promise<UserType | null> {
     const user = await User.findOne({
+      include: { association: 'roles' },
       where: {
         register
       }
@@ -50,10 +57,11 @@ export class UserRepository {
     return user
   }
 
-  async listUser(filter: Partial<UserType>): Promise<UserType[] | null> {
+  async listAllUsers(filters: FilterUserType): Promise<UserType[] | null> {
     const user = await User.findAll({
+      include: { association: 'roles' },
       where: {
-        ...filter
+        ...filters
       }
     })
     return user

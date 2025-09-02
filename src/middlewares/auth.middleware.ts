@@ -3,25 +3,9 @@ import { UserController } from "../controllers/user.controller";
 import { isJWTValid } from "../utils/jwt";
 import { AppError } from "../errors/app.error";
 
-const publicRoutes = [
-  {
-    path: UserController.path,
-    method: 'POST'
-  },
-  {
-    path: UserController.authPath,
-    method: 'POST'
-  },
-]
-
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const { path, method } = req
   const pathWithoutQuery = path.split('?')[0]
-
-  if (publicRoutes.find(route => route.path === pathWithoutQuery && route.method === method)) {
-    next()
-    return
-  }
 
   const authHeader = req.headers.authorization
   const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : ''
@@ -32,14 +16,12 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
     throw new AppError('token is required', 401, 'UNAUTHORIZED')
   }
 
-  if (pathWithoutQuery?.startsWith(`${UserController.path}/`)) {
+  if (pathWithoutQuery?.startsWith(`user/`)) {
 
     const separedPath = pathWithoutQuery.split('/')
 
     const paramId = Number(separedPath.find(node => node && !isNaN(Number(node))))
 
-    console.log(paramId);
-    
 
     if (paramId && paramId !== Number(jwtPayload.sub)) {
       throw new AppError('You are not allowed to access this resource', 403, 'FORBIDDEN');
