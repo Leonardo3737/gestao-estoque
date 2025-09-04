@@ -7,6 +7,7 @@ import { UserRoleRepository } from '../repositories/user-role.repository';
 import { UserRepository } from "../repositories/user.repository";
 import { UserRolesService } from '../services/user-role.service';
 import { UserService } from "../services/user.service";
+import { WarehouseController } from "../controllers/warehouse.controller";
 
 
 export function controllersStartup(app: Application) {
@@ -21,4 +22,6 @@ export function controllersStartup(app: Application) {
   const rolesService = new UserRolesService(rolesRespository)
   new UserRoleController(app, rolesService)
 
+  /* WAREHOUSE */
+  new WarehouseController(app)
 }

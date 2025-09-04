@@ -13,7 +13,6 @@ export abstract class BaseController {
 
   constructor(app: Application) {
 
-
     // DISPONIBILIZAR TODOS END-POINTS PUBLICOS ANTES DE APLICAR OS MIDDLEWARES
     if (this.publicEndPoints) {
       app.use(
@@ -24,10 +23,8 @@ export abstract class BaseController {
       );
     }
 
-    // 🔑 router protegido com autenticação
-    app.use(authMiddleware);
-
-    // APLICANDO MIDDLEWARE DE ROLES
+    
+    // APLICANDO MIDDLEWARES
 
     // DEFAULT
     if (this.defaultEndPoints) {
@@ -35,7 +32,10 @@ export abstract class BaseController {
         this.basePath(),
         this.applyEndPoints(
           this.defaultEndPoints(),
-          rolesMiddleware(undefined, this.basePath())
+          [
+            authMiddleware,
+            rolesMiddleware(undefined, this.basePath())
+          ]
         )
       );
     }
@@ -46,7 +46,10 @@ export abstract class BaseController {
         this.basePath(),
         this.applyEndPoints(
           this.adminEndPoints(),
-          rolesMiddleware(RolesEnum.ADMIN)
+          [
+            authMiddleware,
+            rolesMiddleware(RolesEnum.ADMIN)
+          ]
         )
       );
     }
@@ -57,7 +60,10 @@ export abstract class BaseController {
         this.basePath(),
         this.applyEndPoints(
           this.managerEndPoints(),
-          rolesMiddleware(RolesEnum.MANAGER)
+          [
+            authMiddleware,
+            rolesMiddleware(RolesEnum.MANAGER)
+          ]
         )
       );
     }
@@ -68,14 +74,17 @@ export abstract class BaseController {
         this.basePath(),
         this.applyEndPoints(
           this.operatorEndPoints(),
-          rolesMiddleware(RolesEnum.OPERATOR)
+          [
+            authMiddleware,
+            rolesMiddleware(RolesEnum.OPERATOR)
+          ]
         )
       );
     }
   }
 
 
-  private applyEndPoints(endPoints: EndPointType[], middleware?: RequestHandler): Router {
+  private applyEndPoints(endPoints: EndPointType[], middleware?: RequestHandler | RequestHandler[]): Router {
     const router = Router()
     endPoints.forEach(endPoint => {
       if (middleware) {
