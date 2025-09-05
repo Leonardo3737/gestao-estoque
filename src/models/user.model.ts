@@ -2,6 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/db-connection";
 import { UserType } from "../dtos/user/user.schema";
 import { CreateUserType } from "../dtos/user/create-user.dto";
+import { UserRoleType } from "../dtos/user-role/user-role.schema";
 
 
 class User extends Model<UserType, CreateUserType> {
@@ -10,6 +11,7 @@ class User extends Model<UserType, CreateUserType> {
   declare phone: string;
   declare register: string;
   declare password: string;
+  declare roles: UserRoleType[];
   declare createdAt: Date;
   declare updatedAt: Date;
 }

@@ -12,7 +12,11 @@ export function rolesMiddleware(role?: RolesEnum, path?: string) {
     }
     
     const userRepository = new UserRepository()
-    const user = await userRepository.listUserById(userId)
+    const user = await userRepository.listById(userId)
+
+    console.log(req.user);
+    console.log(user);
+    
 
     if (!user) {
       throw new AppError('token is required', 401, 'UNAUTHORIZED');

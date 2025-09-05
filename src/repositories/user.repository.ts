@@ -8,25 +8,13 @@ import User from "../models/user.model";
 import { removeUndefined } from "../utils/remove-undefined";
 import { FilterUserRoleType } from "../dtos/user-role/filter-user-role.dto";
 import { FilterUserType } from "../dtos/user/filter-user.dto";
+import { BaseRepository } from "./base.repository";
+import { Attributes, WhereOptions } from "sequelize";
 
-export class UserRepository {
+export class UserRepository extends BaseRepository<User> {
 
-  async alterUser(userId: number, newUserData: UpdateUserType): Promise<void> {
-    await User.update({ ...newUserData as any }, { where: { id: userId } })
-  }
-
-  async createUser(newUser: CreateUserType): Promise<ListUserType> {
-    try {
-      const process = await User.create(newUser)
-
-      const userCreated = new ListUserDTO({ ...process.dataValues }).getAll()
-      return userCreated
-    }
-    catch (err) {
-      console.error('Erro ao criar usuario:', err);
-      throw new AppError();
-    }
-
+  constructor() {
+    super(User)
   }
 
   // DEVE SER CHAMDA APENAS EM UserService.resetPassword
@@ -34,16 +22,20 @@ export class UserRepository {
     await User.update({ password }, { where: { id } })
   }
 
-  async deleteUser(id: number): Promise<void> {
-    await User.destroy({ where: { id } })
+  async listById(id: number): Promise<User | null> {
+    const user = await User.findByPk(id, {
+      include: { association: 'roles' }
+    })
+    return user
   }
 
-  async listUserById(id: number): Promise<UserType | null> {
-    const user = await User.findByPk(
-      id,
-      {
-        include: { association: 'roles' },
-      })
+  override async listAll(filters?: WhereOptions<Attributes<User>>): Promise<User[] | null> {
+    const user = await User.findAll({
+      include: { association: 'roles' },
+      where: {
+        ...filters
+      }
+    })
     return user
   }
 
@@ -56,15 +48,4 @@ export class UserRepository {
     })
     return user
   }
-
-  async listAllUsers(filters: FilterUserType): Promise<UserType[] | null> {
-    const user = await User.findAll({
-      include: { association: 'roles' },
-      where: {
-        ...filters
-      }
-    })
-    return user
-  }
-
 }

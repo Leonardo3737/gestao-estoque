@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { UserController } from "../controllers/user.controller";
 import { isJWTValid } from "../utils/jwt";
 import { AppError } from "../errors/app.error";
 

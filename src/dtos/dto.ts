@@ -6,7 +6,7 @@ export abstract class DTO<Schema extends z.ZodType> {
   protected data!: z.infer<Schema>
 
   constructor(
-    data: Record<string, unknown>
+    data: Record<string, unknown> | object
   ) {
     this.validate(data)
   }

@@ -7,43 +7,41 @@ import { encryptPassword } from "../utils/encrypt"
 import bcrypt from 'bcrypt'
 import { genJWT } from "../utils/jwt"
 import { UpdateUserDTO } from "../dtos/user/update-user.dto"
-import { UserType } from "../dtos/user/user.schema"
-import { FilterUserRoleType } from "../dtos/user-role/filter-user-role.dto"
-import { FilterUserType } from "../dtos/user/filter-user.dto"
+import { FilterUserDTO, FilterUserType } from "../dtos/user/filter-user.dto"
+import { BaseService } from "./base.service"
+import User from "../models/user.model"
+import z from "zod"
+import { DTO } from "../dtos/dto"
+import { InferAttributes } from "sequelize"
 
-export class UserService {
+export class UserService extends BaseService<User> {
 
-  constructor(
-    private repository: UserRepository,
-  ) { }
+  constructor() {
+    super(new UserRepository())
+  }
 
-  async registerUser(newUser: CreateUserDTO): Promise<ListUserType> {
-
-    const user = newUser.getAll()
+  override async create(newUser: DTO<any>): Promise<ListUserType> {
+    const user = newUser.getAll() as ReturnType<CreateUserDTO["getAll"]>;
 
     await this.checkConflict(user.phone, user.register)
 
     user.password = await encryptPassword(user.password)
-
-    return await this.repository.createUser(user)
+    const res = await this.repository.create(user)
+    return new ListUserDTO(res).getAll()
   }
 
-  async alterUser(userId: number, newUser: UpdateUserDTO): Promise<void> {
+  override async alter(userId: number, newUser: DTO<any>): Promise<void> {
 
-    const user = newUser.getAll()
+    const user = newUser.getAll() as ReturnType<UpdateUserDTO["getAll"]>;
 
     await this.checkConflict(user.phone, user.register)
 
-    await this.repository.alterUser(userId, user)
+    await this.repository.alter(userId, user as Partial<InferAttributes<User>>)
   }
 
-  async deleteUser(id: number): Promise<void> {
-    await this.listUserById(id)
-    await this.repository.deleteUser(id)
-  }
 
-  async listUserById(id: number): Promise<ListUserType> {
-    const user = await this.repository.listUserById(id)
+  override async listById(id: number): Promise<ListUserType> {
+    const user = await this.repository.listById(id)
 
     if (!user) {
       throw new AppError('User not found', 404)
@@ -54,21 +52,24 @@ export class UserService {
     return userWithouPassword.getAll()
   }
 
-  async listAllUsers(filters: FilterUserType): Promise<ListUserType[]> {
-    const users = await this.repository.listAllUsers(filters)
+
+  override async listAll(filters?: DTO<any>): Promise<ListUserType[]> {
+
+    const auxFilter = filters?.getAll() as ReturnType<FilterUserDTO["getAll"]>;
+
+    const users = await this.repository.listAll(auxFilter)
 
     if (!users) {
       throw new AppError('User not found', 404)
     }
 
-    
-    const userWithouPassword = users.map(user => new ListUserDTO(user).getAll())
+    const userWithoutPassword = users.map(user => new ListUserDTO(user).getAll())
 
-    return userWithouPassword
+    return userWithoutPassword
   }
 
   async userAuth(auth: UserAuthDTO): Promise<string> {
-    const user = await this.repository.listUserByRegister(auth.get('register'))
+    const user = await (this.repository as UserRepository).listUserByRegister(auth.get('register'))
 
     if (!user) {
       throw new AppError('user not found', 404)
@@ -89,16 +90,16 @@ export class UserService {
 
   private async checkConflict(phone?: string, register?: string) {
     if (phone) {
-      const userWithSamephone = await this.repository.listAllUsers({ phone })
+      const userWithSamephone = await this.repository.listAll({ phone })
 
-      if (userWithSamephone?.length){        
+      if (userWithSamephone?.length) {
         throw new AppError('There is already a user with this phone', 409)
       }
     }
-    
+
     if (register) {
-      const userWithSameRegister = await this.repository.listAllUsers({ register })
-      
+      const userWithSameRegister = await this.repository.listAll({ register })
+
       if (userWithSameRegister?.length) {
         throw new AppError('There is already a user with this register', 409)
       }

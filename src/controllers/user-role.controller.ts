@@ -5,13 +5,17 @@ import { UserRolesService } from '../services/user-role.service';
 import { getParamsId } from '../utils/get-params-id';
 import { BaseController, EndPointType } from './base.controller';
 import { RolesEnum } from '../enums/roles.enum';
+import { UpdateUserRoleDTO } from '../dtos/user-role/update-user-role.dto';
+import UserRole from '../models/user-role.model';
 
-export class UserRoleController extends BaseController {
+export class UserRoleController extends BaseController<UserRole, UserRolesService> {
   constructor(
-    private app: Application,
-    private service: UserRolesService
+    app: Application
   ) {
-    super(app)
+    super({
+      app,
+      service: new UserRolesService()
+    })
   }
 
   protected basePath() {
@@ -24,11 +28,9 @@ export class UserRoleController extends BaseController {
         path: '/',
         method: 'get',
         handle: async (req, res) => {
-          const filters = new FilterUserRoleDTO({
-            ...req.params
-          })
+          const filters = new FilterUserRoleDTO(req.query)
 
-          const userRoles = await this.service.listAllUserRole(filters.getAll())
+          const userRoles = await this.service.listAll(filters)
           res.status(200).send(userRoles)
         }
       },
@@ -36,11 +38,9 @@ export class UserRoleController extends BaseController {
         path: '/:id',
         method: 'patch',
         handle: async (req, res) => {
-          const data = new CreateUserRoleDTO({
-            ...req.body
-          })
+          const data = new UpdateUserRoleDTO(req.body)
           const userRoleId = getParamsId(req)
-          await this.service.alterUserRole(userRoleId, data)
+          await this.service.alter(userRoleId, data)
           res.status(204).send()
         }
       },
@@ -49,7 +49,7 @@ export class UserRoleController extends BaseController {
         method: 'delete',
         handle: async (req, res) => {
           const id = getParamsId(req)
-          await this.service.deleteUserRole(id)
+          await this.service.delete(id)
           res.status(204).send()
         }
       },
@@ -62,11 +62,9 @@ export class UserRoleController extends BaseController {
         path: '',
         method: 'post',
         handle: async (req, res) => {
-          const data = new CreateUserRoleDTO({
-            ...req.body
-          })
+          const data = new CreateUserRoleDTO(req.body)
 
-          const newRole = await this.service.registerUserRole(data)
+          const newRole = await this.service.create(data)
           res.status(201).send(newRole)
         }
       },

@@ -1,4 +1,4 @@
-import { Application } from "express";
+/* import { Application } from "express";
 import { BaseController, EndPointType } from "./base.controller";
 import { CreateWarehouseDTO } from "../dtos/warehouse/create-warehouse.dto";
 import { WarehouseService } from "../services/warehouse.service";
@@ -27,4 +27,4 @@ export class WarehouseController extends BaseController {
     }]
   }
 
-}
+} */

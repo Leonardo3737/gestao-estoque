@@ -7,14 +7,17 @@ import { getParamsId } from "../utils/get-params-id";
 import { UpdateUserDTO } from "../dtos/user/update-user.dto";
 import { FilterUserDTO } from "../dtos/user/filter-user.dto";
 import { BaseController, EndPointType } from "./base.controller";
+import User from "../models/user.model";
 
-export class UserController extends BaseController {
+export class UserController extends BaseController<User, UserService> {
 
   constructor(
-    private app: Application,
-    private service: UserService
+    app: Application
   ) {
-    super(app)
+    super({
+      app,
+      service: new UserService()
+    })
   }
 
   protected basePath() {
@@ -27,11 +30,9 @@ export class UserController extends BaseController {
         path: '/',
         method: 'post',
         handle: async (req: Request, res: Response) => {
-          const data = new CreateUserDTO({
-            ...req.body
-          })
+          const data = new CreateUserDTO(req.body)
 
-          const newUser = await this.service.registerUser(data)
+          const newUser = await this.service.create(data)
           res.status(201).send(newUser)
         }
       },
@@ -39,9 +40,7 @@ export class UserController extends BaseController {
         path: '/auth',
         method: 'post',
         handle: async (req: Request, res: Response) => {
-          const data = new UserAuthDTO({
-            ...req.body
-          })
+          const data = new UserAuthDTO(req.body)
 
           const token = await this.service.userAuth(data)
           res.status(200).send({ token })
@@ -59,7 +58,7 @@ export class UserController extends BaseController {
           if (!req.user) {
             throw new AppError('unauthorized', 401)
           }
-          const user = await this.service.listUserById(req.user.sub)
+          const user = await this.service.listById(req.user.sub)
           res.send(user)
         }
       },
@@ -67,11 +66,9 @@ export class UserController extends BaseController {
         path: '/:id',
         method: 'patch',
         handle: async (req: Request, res: Response) => {
-          const data = new UpdateUserDTO({
-            ...req.body
-          })
+          const data = new UpdateUserDTO(req.body)
           const userId = getParamsId(req)
-          const newUser = await this.service.alterUser(userId, data)
+          const newUser = await this.service.alter(userId, data)
           res.status(204).send(newUser)
         }
       },
@@ -86,7 +83,7 @@ export class UserController extends BaseController {
         handle: async (req: Request, res: Response) => {
           const id = getParamsId(req)
 
-          await this.service.deleteUser(id)
+          await this.service.delete(id)
           res.status(204).send()
         }
       },
@@ -94,8 +91,8 @@ export class UserController extends BaseController {
         path: '/',
         method: 'get',
         handle: async (req: Request, res: Response) => {
-          const filters = new FilterUserDTO(req.params)
-          const user = await this.service.listAllUsers(filters.getAll())
+          const filters = new FilterUserDTO(req.query)
+          const user = await this.service.listAll(filters)
           res.send(user)
         }
       },
@@ -104,7 +101,7 @@ export class UserController extends BaseController {
         method: 'get',
         handle: async (req: Request, res: Response) => {
           const id = getParamsId(req)
-          const user = await this.service.listUserById(id)
+          const user = await this.service.listById(id)
           res.send(user)
         }
       },
