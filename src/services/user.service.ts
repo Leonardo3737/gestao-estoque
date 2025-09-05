@@ -1,16 +1,15 @@
 import { AppError } from "../errors/app.error"
-import { CreateUserDTO } from "../dtos/user/create-user.dto"
+import { CreateUserType } from "../dtos/user/create-user.dto"
 import { ListUserDTO, ListUserType } from "../dtos/user/list-user.dto"
-import { UserAuthDTO, UserAuthType } from "../dtos/user/user-auth.dto"
+import { UserAuthDTO } from "../dtos/user/user-auth.dto"
 import { UserRepository } from "../repositories/user.repository"
 import { encryptPassword } from "../utils/encrypt"
 import bcrypt from 'bcrypt'
 import { genJWT } from "../utils/jwt"
-import { UpdateUserDTO } from "../dtos/user/update-user.dto"
+import { UpdateUserDTO, UpdateUserType } from "../dtos/user/update-user.dto"
 import { FilterUserDTO, FilterUserType } from "../dtos/user/filter-user.dto"
 import { BaseService } from "./base.service"
 import User from "../models/user.model"
-import z from "zod"
 import { DTO } from "../dtos/dto"
 import { InferAttributes } from "sequelize"
 
@@ -21,7 +20,7 @@ export class UserService extends BaseService<User> {
   }
 
   override async create(newUser: DTO<any>): Promise<ListUserType> {
-    const user = newUser.getAll() as ReturnType<CreateUserDTO["getAll"]>;
+    const user: CreateUserType = newUser.getAll()
 
     await this.checkConflict(user.phone, user.register)
 
@@ -32,7 +31,7 @@ export class UserService extends BaseService<User> {
 
   override async alter(userId: number, newUser: DTO<any>): Promise<void> {
 
-    const user = newUser.getAll() as ReturnType<UpdateUserDTO["getAll"]>;
+    const user: UpdateUserType = newUser.getAll()
 
     await this.checkConflict(user.phone, user.register)
 
@@ -55,7 +54,7 @@ export class UserService extends BaseService<User> {
 
   override async listAll(filters?: DTO<any>): Promise<ListUserType[]> {
 
-    const auxFilter = filters?.getAll() as ReturnType<FilterUserDTO["getAll"]>;
+    const auxFilter: FilterUserType = filters?.getAll()
 
     const users = await this.repository.listAll(auxFilter)
 

@@ -1,4 +1,3 @@
-import { UserRoleSchema, UserRoleType } from '../dtos/user-role/user-role.schema'
 import UserRole from '../models/user-role.model'
 import { UserRoleRepository } from '../repositories/user-role.repository'
 import { BaseService } from './base.service'

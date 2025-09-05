@@ -1,13 +1,5 @@
-import { AppError } from "../errors/app.error";
-import { CreateUserType } from "../dtos/user/create-user.dto";
-import { ListUserDTO, ListUserType } from "../dtos/user/list-user.dto";
-import { UpdateUserType } from "../dtos/user/update-user.dto";
-import { UserAuthType } from "../dtos/user/user-auth.dto";
 import { UserType } from "../dtos/user/user.schema";
 import User from "../models/user.model";
-import { removeUndefined } from "../utils/remove-undefined";
-import { FilterUserRoleType } from "../dtos/user-role/filter-user-role.dto";
-import { FilterUserType } from "../dtos/user/filter-user.dto";
 import { BaseRepository } from "./base.repository";
 import { Attributes, WhereOptions } from "sequelize";
 
