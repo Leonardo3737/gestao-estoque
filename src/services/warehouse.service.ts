@@ -1,13 +1,9 @@
-import { CreateWarehouseType } from "../dtos/warehouse/create-warehouse.dto";
+import Warehouse from '../models/warehouse.model';
 import { WarehouseRepository } from "../repositories/warehouse.repository";
+import { BaseService } from './base.service';
 
-export class WarehouseService {
-  private repository: WarehouseRepository
+export class WarehouseService extends BaseService<Warehouse>{
   constructor () {
-    this.repository = new WarehouseRepository()
-  }
-  async Create(newWarehouse: CreateWarehouseType) {
-    const res = await this.repository.Create(newWarehouse)
-    return res
+    super(new WarehouseRepository())
   }
 }
