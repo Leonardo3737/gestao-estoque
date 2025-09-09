@@ -2,8 +2,10 @@ import { Application } from "express";
 import { BaseController, EndPointType } from "./base.controller";
 import { CreateWarehouseDTO } from "../dtos/warehouse/create-warehouse.dto";
 import { WarehouseService } from "../services/warehouse.service";
-import { AppError } from "../errors/app.error";
 import Warehouse from '../models/warehouse.model';
+import { getParamsId } from '../utils/get-params-id';
+import { UpdateWarehouseDTO } from '../dtos/warehouse/update-warehouse.dto';
+import { FilterWarehouseDTO } from '../dtos/warehouse/filter-warehouse.dto';
 
 export class WarehouseController extends BaseController<Warehouse, WarehouseService> {
   constructor(app: Application) {
@@ -26,7 +28,37 @@ export class WarehouseController extends BaseController<Warehouse, WarehouseServ
         const warehouse = await this.service.create(data)
         res.status(201).send(warehouse)
       }
-    }]
+    },
+    {
+      path: '/',
+      method: 'get',
+      handle: async (req, res) => {
+        const filters = new FilterWarehouseDTO(req.query)
+
+        const warehouse = await this.service.listAll(filters)
+        res.status(200).send(warehouse)
+      }
+    },
+    {
+      path: '/:id',
+      method: 'patch',
+      handle: async (req, res) => {
+        const data = new UpdateWarehouseDTO(req.body)
+        const warehouse = getParamsId(req)
+        await this.service.alter(warehouse, data)
+        res.status(204).send()
+      }
+    },
+    {
+      path: '/:id',
+      method: 'delete',
+      handle: async (req, res) => {
+        const id = getParamsId(req)
+        await this.service.delete(id)
+        res.status(204).send()
+      }
+    },
+  ]
   }
 
 } 
