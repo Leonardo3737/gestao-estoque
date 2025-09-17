@@ -2,6 +2,7 @@ import { Application } from "express";
 import { UserRoleController } from '../controllers/user-role.controller';
 import { UserController } from "../controllers/user.controller";
 import { WarehouseController } from '../controllers/warehouse.controller';
+import { AisleController } from '../controllers/aisle.controller';
 
 export function controllersStartup(app: Application) {
 
@@ -13,4 +14,7 @@ export function controllersStartup(app: Application) {
 
   /* WAREHOUSE */
   new WarehouseController(app)
+
+  /* AISLE */
+  new AisleController(app)
 }
