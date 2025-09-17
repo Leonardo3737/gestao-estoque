@@ -4,7 +4,6 @@ import { FilterUserRoleDTO } from '../dtos/user-role/filter-user-role.dto';
 import { UserRolesService } from '../services/user-role.service';
 import { getParamsId } from '../utils/get-params-id';
 import { BaseController, EndPointType } from './base.controller';
-import { RolesEnum } from '../enums/roles.enum';
 import { UpdateUserRoleDTO } from '../dtos/user-role/update-user-role.dto';
 import UserRole from '../models/user-role.model';
 
@@ -22,7 +21,7 @@ export class UserRoleController extends BaseController<UserRole, UserRolesServic
     return '/user-role'
   }
 
-  protected operatorEndPoints(): EndPointType[] {
+  protected adminEndPoints(): EndPointType[] {
     return [
       {
         path: '/',

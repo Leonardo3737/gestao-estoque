@@ -1,6 +1,7 @@
 import { Application } from "express";
 import { UserRoleController } from '../controllers/user-role.controller';
 import { UserController } from "../controllers/user.controller";
+import { WarehouseController } from '../controllers/warehouse.controller';
 
 export function controllersStartup(app: Application) {
 
@@ -11,5 +12,5 @@ export function controllersStartup(app: Application) {
   new UserRoleController(app)
 
   /* WAREHOUSE */
-  //new WarehouseController(app)
+  new WarehouseController(app)
 }
