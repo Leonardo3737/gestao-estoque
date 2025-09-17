@@ -3,6 +3,7 @@ import { UserRoleController } from '../controllers/user-role.controller';
 import { UserController } from "../controllers/user.controller";
 import { WarehouseController } from '../controllers/warehouse.controller';
 import { AisleController } from '../controllers/aisle.controller';
+import { LocationController } from '../controllers/location.controller';
 
 export function controllersStartup(app: Application) {
 
@@ -17,4 +18,7 @@ export function controllersStartup(app: Application) {
 
   /* AISLE */
   new AisleController(app)
+
+  /* LOCATION */
+  new LocationController(app)
 }
