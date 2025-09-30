@@ -52,13 +52,11 @@ export class UserController extends BaseController<User, UserService> {
   protected defaultEndPoints(): EndPointType[] {
     return [
       {
-        path: '/infos',
+        path: '/:id',
         method: 'get',
         handle: async (req: Request, res: Response) => {
-          if (!req.user) {
-            throw new AppError('unauthorized', 401)
-          }
-          const user = await this.service.listById(req.user.sub)
+          const id = getParamsId(req)
+          const user = await this.service.listById(id)
           res.send(user)
         }
       },
@@ -93,15 +91,6 @@ export class UserController extends BaseController<User, UserService> {
         handle: async (req: Request, res: Response) => {
           const filters = new FilterUserDTO(req.query)
           const user = await this.service.listAll(filters)
-          res.send(user)
-        }
-      },
-      {
-        path: '/:id',
-        method: 'get',
-        handle: async (req: Request, res: Response) => {
-          const id = getParamsId(req)
-          const user = await this.service.listById(id)
           res.send(user)
         }
       },

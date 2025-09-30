@@ -45,6 +45,8 @@ export abstract class BaseController<
 
     // DEFAULT
     if (this.defaultEndPoints) {
+      console.log(this.basePath());
+      
       app.use(
         this.basePath(),
         this.applyEndPoints(
