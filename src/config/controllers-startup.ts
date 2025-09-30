@@ -4,6 +4,8 @@ import { UserController } from "../controllers/user.controller";
 import { WarehouseController } from '../controllers/warehouse.controller';
 import { AisleController } from '../controllers/aisle.controller';
 import { LocationController } from '../controllers/location.controller';
+import { CategoryController } from "../controllers/category.controller";
+import { ProductController } from "../controllers/product.controller";
 
 export function controllersStartup(app: Application) {
 
@@ -21,4 +23,10 @@ export function controllersStartup(app: Application) {
 
   /* LOCATION */
   new LocationController(app)
+
+  /* CATEGORY */
+  new CategoryController(app)
+
+  /* PRODUCT */
+  new ProductController(app)
 }

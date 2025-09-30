@@ -18,6 +18,7 @@ export abstract class BaseService<TModel extends Model> {
 
   async alter<Schema extends z.ZodType>(id: number, dto: DTO<Schema>): Promise<void> {
     const obj = dto.getAll()
+    await this.listById(id)
     await this.repository.alter(id, obj as Partial<InferAttributes<TModel>>)
   }
 

@@ -5,9 +5,8 @@ import { UserRepository } from "../repositories/user.repository";
 import { AppError } from "../errors/app.error";
 
 export function rolesMiddleware(role?: RolesEnum, path?: string) {
-  console.log(path)
   return async (req: Request, res: Response, next: NextFunction) => {
-    console.log(path)
+
     const userId = req.user?.sub
     if (!userId) {
       throw new AppError('You are not allowed to access this resource', 403, 'FORBIDDEN');
@@ -16,8 +15,6 @@ export function rolesMiddleware(role?: RolesEnum, path?: string) {
     const userRepository = new UserRepository()
     const user = await userRepository.listById(userId)
 
-    console.log(req.user);
-    console.log(user);
 
 
     if (!user) {
@@ -38,12 +35,6 @@ export function rolesMiddleware(role?: RolesEnum, path?: string) {
       }
     })
 
-
-    console.log({
-      isAdmin,
-      path,
-      pathWithoutQuery
-    })
 
     if (!isAdmin && path === '/user' && pathWithoutQuery?.startsWith('/')) {
       const separedPath = pathWithoutQuery.split('/')

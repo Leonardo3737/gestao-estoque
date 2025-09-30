@@ -44,9 +44,7 @@ export abstract class BaseController<
     // APLICANDO MIDDLEWARES
 
     // DEFAULT
-    if (this.defaultEndPoints) {
-      console.log(this.basePath());
-      
+    if (this.defaultEndPoints) {      
       app.use(
         this.basePath(),
         this.applyEndPoints(
