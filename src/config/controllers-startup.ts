@@ -6,6 +6,7 @@ import { AisleController } from '../controllers/aisle.controller';
 import { LocationController } from '../controllers/location.controller';
 import { CategoryController } from "../controllers/category.controller";
 import { ProductController } from "../controllers/product.controller";
+import { TransactionController } from "../controllers/transaction.controller";
 
 export function controllersStartup(app: Application) {
 
@@ -29,4 +30,7 @@ export function controllersStartup(app: Application) {
 
   /* PRODUCT */
   new ProductController(app)
+
+  /* TRANSACTION */
+  new TransactionController(app)
 }

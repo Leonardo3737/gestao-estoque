@@ -1,18 +1,18 @@
-import { Attributes, InferAttributes, Model, ModelStatic, WhereOptions } from 'sequelize';
+import { Attributes, InferAttributes, Model, ModelStatic, Transaction, WhereOptions } from 'sequelize';
 import { AppError } from '../errors/app.error';
 
 export abstract class BaseRepository<TModel extends Model> {
 
   constructor(private Model: ModelStatic<TModel>) { }
 
-  async alter(id: number, newRolesData: Partial<InferAttributes<TModel>>): Promise<void> {
+  async alter(id: number, newRolesData: Partial<InferAttributes<TModel>>, transaction?: Transaction): Promise<void> {
     const where = { id } as unknown as WhereOptions<Attributes<TModel>>
-    await this.Model.update(newRolesData, { where })
+    await this.Model.update(newRolesData, { where, ...(transaction ? { transaction } : {}) })
   }
 
-  async create(newRoles: TModel['_creationAttributes']): Promise<object> {
+  async create(newRoles: TModel['_creationAttributes'], transaction?: Transaction): Promise<object> {
     try {
-      const process = await this.Model.create(newRoles)
+      const process = await this.Model.create(newRoles, (transaction ? { transaction } : {}))
       return process.dataValues
     }
     catch (err) {
@@ -21,9 +21,9 @@ export abstract class BaseRepository<TModel extends Model> {
     }
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number, transaction?: Transaction): Promise<void> {
     const where = { id } as unknown as WhereOptions<Attributes<TModel>>
-    await this.Model.destroy({ where })
+    await this.Model.destroy({ where, ...(transaction ? { transaction } : {}) })
   }
 
   async listById(id: number): Promise<TModel | null> {

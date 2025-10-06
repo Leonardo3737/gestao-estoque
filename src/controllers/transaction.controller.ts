@@ -1,23 +1,23 @@
 import { Application } from "express";
 import { BaseController, EndPointType } from "./base.controller";
-import Product from '../models/product.model';
+import Transaction from '../models/transaction.model';
 import { getParamsId } from '../utils/get-params-id';
-import { CreateProductDTO } from "../dtos/product/create-product.dto";
-import { FilterProductDTO } from "../dtos/product/filter-product.dto";
-import { ProductService } from "../services/product.service";
-import { UpdateProductDTO } from "../dtos/product/update-product.dto";
+import { CreateTransactionDTO } from "../dtos/transaction/create-transaction.dto";
+import { FilterTransactionDTO } from "../dtos/transaction/filter-transaction.dto";
+import { TransactionService } from "../services/transaction.service";
+import { UpdateTransactionDTO } from "../dtos/transaction/update-transaction.dto";
 
 
-export class ProductController extends BaseController<Product, ProductService> {
+export class TransactionController extends BaseController<Transaction, TransactionService> {
   constructor(app: Application) {
     super({
       app,
-      service: new ProductService()
+      service: new TransactionService()
     })
   }
 
   protected basePath(): string {
-    return "/product"
+    return "/transaction"
   }
 
   protected operatorEndPoints(): EndPointType[] {
@@ -26,19 +26,19 @@ export class ProductController extends BaseController<Product, ProductService> {
         path: "/",
         method: "post",
         handle: async (req, res) => {
-          const data = new CreateProductDTO(req.body)
-          const product = await this.service.create(data)
-          res.status(201).send(product)
+          const data = new CreateTransactionDTO({...req.body, userId: req.user?.sub})
+          const transaction = await this.service.create(data)
+          res.status(201).send(transaction)
         }
       },
       {
         path: '/',
         method: 'get',
         handle: async (req, res) => {
-          const filters = new FilterProductDTO(req.query)
+          const filters = new FilterTransactionDTO(req.query)
 
-          const product = await this.service.listAll(filters)
-          res.status(200).send(product)
+          const transaction = await this.service.listAll(filters)
+          res.status(200).send(transaction)
         }
       },
       {
@@ -54,9 +54,9 @@ export class ProductController extends BaseController<Product, ProductService> {
         path: '/:id',
         method: 'patch',
         handle: async (req, res) => {
-          const data = new UpdateProductDTO(req.body)
-          const product = getParamsId(req)
-          await this.service.alter(product, data)
+          const data = new UpdateTransactionDTO(req.body)
+          const transaction = getParamsId(req)
+          await this.service.alter(transaction, data)
           res.status(204).send()
         }
       },
