@@ -1,6 +1,5 @@
 import z from "zod";
 import { CategorySchema } from "../category/category.schema";
-import { LocationSchema } from "../location/location.schema";
 
 export const ProductSchema = z.object({
   id: z.number(),

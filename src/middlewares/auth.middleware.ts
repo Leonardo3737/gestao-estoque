@@ -4,6 +4,7 @@ import { AppError } from "../errors/app.error";
 
 export function authMiddleware(req: Request, _: Response, next: NextFunction) {
   const authHeader = req.headers.authorization
+  
   const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : ''
 
   const jwtPayload = isJWTValid(token)  
