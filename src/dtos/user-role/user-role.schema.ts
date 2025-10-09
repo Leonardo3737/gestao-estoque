@@ -7,6 +7,7 @@ export const UserRoleSchema = z.object({
   role: z.enum(RolesEnum),
   createdAt: z.date(),
   updatedAt: z.date(),
+  deletedAt: z.date(),
 })
 
 export type UserRoleType = z.infer<typeof UserRoleSchema>

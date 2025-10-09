@@ -1,8 +1,8 @@
 import z from 'zod';
-import { WarehouseSchema } from './warehouse.schema';
 import { DTO } from '../dto';
+import { CreateWarehouseSchema } from './create-warehouse.dto';
 
-export const UpdateWarehouseSchema = WarehouseSchema.omit({
+export const UpdateWarehouseSchema = CreateWarehouseSchema.omit({
   name: true,
   address: true,
 }).partial()

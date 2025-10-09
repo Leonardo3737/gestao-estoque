@@ -1,6 +1,5 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/db-connection";
-import Warehouse from './warehouse.model';
 import { CategoryType } from "../dtos/category/category.schema";
 import { CreateCategoryType } from "../dtos/category/create-category.dto";
 

@@ -1,9 +1,9 @@
 
 import z from 'zod';
 import { DTO } from '../dto';
-import { UserRoleSchema } from './user-role.schema';
+import { CreateUserRoleSchema } from './create-user-role.dto';
 
-export const UpdateUserRoleSchema = UserRoleSchema.partial()
+export const UpdateUserRoleSchema = CreateUserRoleSchema.partial()
 
 export type UpdateUserRoleType = z.infer<typeof UpdateUserRoleSchema>
 

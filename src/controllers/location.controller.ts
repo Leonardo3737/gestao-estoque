@@ -42,6 +42,15 @@ export class LocationController extends BaseController<Location, LocationService
     },
     {
       path: '/:id',
+      method: 'get',
+      handle: async (req, res) => {
+        const locationId = getParamsId(req)
+        const location = await this.service.listById(locationId)
+        res.status(200).send(location)
+      }
+    },
+    {
+      path: '/:id',
       method: 'patch',
       handle: async (req, res) => {
         const data = new UpdateLocationDTO(req.body)

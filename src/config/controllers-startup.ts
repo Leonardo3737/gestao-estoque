@@ -7,6 +7,7 @@ import { LocationController } from '../controllers/location.controller';
 import { CategoryController } from "../controllers/category.controller";
 import { ProductController } from "../controllers/product.controller";
 import { TransactionController } from "../controllers/transaction.controller";
+import { TransactionLocationController } from "../controllers/transaction-location.controller";
 
 export function controllersStartup(app: Application) {
 
@@ -33,4 +34,7 @@ export function controllersStartup(app: Application) {
 
   /* TRANSACTION */
   new TransactionController(app)
+
+  /* TRANSACTION LOCATION */
+  new TransactionLocationController(app)
 }

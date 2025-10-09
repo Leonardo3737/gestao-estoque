@@ -7,6 +7,7 @@ export const UpdateUserSchema = UserSchema.omit({
   password: true,
   createdAt: true,
   updatedAt: true,
+  deletedAt: true,
 }).partial()
 
 export type UpdateUserType = z.infer<typeof UpdateUserSchema>

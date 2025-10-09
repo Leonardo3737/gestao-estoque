@@ -4,7 +4,10 @@ import { DTO } from "../dto";
 import { LocationSchema } from "./location.schema";
 
 export const CreateLocationSchema = LocationSchema.omit({
-  id: true
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  deletedAt: true,
 })
 
 export type CreateLocationType = z.infer<typeof CreateLocationSchema>

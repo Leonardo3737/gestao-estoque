@@ -7,6 +7,9 @@ class Warehouse extends Model<WarehouseType, CreateWarehouseType> {
   declare id: number;
   declare name: string;
   declare address: string;
+  declare createdAt: Date
+  declare updatedAt: Date
+  declare deletedAt: Date
 }
 
 Warehouse.init({
@@ -23,10 +26,14 @@ Warehouse.init({
     type: DataTypes.STRING(100),
     allowNull: false,
   },
+  createdAt: DataTypes.DATE,
+  updatedAt: DataTypes.DATE,
+  deletedAt: DataTypes.DATE
 }, {
   sequelize,
   tableName: 'warehouse',
-  underscored: true
+  underscored: true,
+  paranoid: true,
 })
 
 export default Warehouse;

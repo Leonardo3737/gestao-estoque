@@ -11,6 +11,7 @@ class UserRole extends Model<UserRoleType, CreateUserRoleType> {
   declare userId: number;
   declare createdAt: Date;
   declare updatedAt: Date;
+  declare deletedAt: Date;
 }
 
 UserRole.init({
@@ -29,10 +30,12 @@ UserRole.init({
   },
   createdAt: DataTypes.DATE,
   updatedAt: DataTypes.DATE,
+  deletedAt: DataTypes.DATE,
 }, {
   sequelize,
   tableName: 'user_role',
-  underscored: true
+  underscored: true,
+  paranoid: true
 })
 
 UserRole.belongsTo(User, {

@@ -7,6 +7,7 @@ export const CreateUserRoleSchema = UserRoleSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+  deletedAt: true,
 })
 
 export type CreateUserRoleType = z.infer<typeof CreateUserRoleSchema>

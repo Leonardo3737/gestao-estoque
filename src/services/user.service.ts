@@ -1,6 +1,5 @@
 import { AppError } from "../errors/app.error"
 import { CreateUserType } from "../dtos/user/create-user.dto"
-import { ListUserDTO, ListUserType } from "../dtos/user/list-user.dto"
 import { UserAuthDTO } from "../dtos/user/user-auth.dto"
 import { UserRepository } from "../repositories/user.repository"
 import { encryptPassword } from "../utils/encrypt"
@@ -12,21 +11,23 @@ import { BaseService } from "./base.service"
 import User from "../models/user.model"
 import { DTO } from "../dtos/dto"
 import { InferAttributes } from "sequelize"
+import { AdminListUserDTO, AdminListUserType } from "../dtos/user/admin-list-user.dto"
 
+// THIS SERVICE IS AVAILABLE ONLY FOR ADMIN
 export class UserService extends BaseService<User> {
 
   constructor() {
     super(new UserRepository())
   }
 
-  override async create(newUser: DTO<any>): Promise<ListUserType> {
+  override async create(newUser: DTO<any>): Promise<AdminListUserType> {
     const user: CreateUserType = newUser.getAll()
 
     await this.checkConflict(user.phone, user.register)
 
     user.password = await encryptPassword(user.password)
     const res = await this.repository.create(user)
-    return new ListUserDTO(res).getAll()
+    return new AdminListUserDTO(res).getAll()
   }
 
   override async alter(userId: number, newUser: DTO<any>): Promise<void> {
@@ -39,20 +40,20 @@ export class UserService extends BaseService<User> {
   }
 
 
-  override async listById(id: number): Promise<ListUserType> {
+  override async listById(id: number): Promise<AdminListUserType> {
     const user = await this.repository.listById(id)
 
     if (!user) {
       throw new AppError('User not found', 404)
     }
 
-    const userWithouPassword = new ListUserDTO(user)
+    const userWithouPassword = new AdminListUserDTO(user)
 
     return userWithouPassword.getAll()
   }
 
 
-  override async listAll(filters?: DTO<any>): Promise<ListUserType[]> {
+  override async listAll(filters?: DTO<any>): Promise<AdminListUserType[]> {
 
     const auxFilter: FilterUserType = filters?.getAll()
 
@@ -62,7 +63,7 @@ export class UserService extends BaseService<User> {
       throw new AppError('User not found', 404)
     }
 
-    const userWithoutPassword = users.map(user => new ListUserDTO(user).getAll())
+    const userWithoutPassword = users.map(user => new AdminListUserDTO(user).getAll())
 
     return userWithoutPassword
   }

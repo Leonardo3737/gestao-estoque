@@ -3,7 +3,9 @@ import { DTO } from "../dto";
 import { UserSchema } from "./user.schema";
 
 export const ListUserSchema = UserSchema.omit({
-  password: true
+  password: true,
+  phone: true,
+  register: true,
 })
 
 export type ListUserType = z.infer<typeof ListUserSchema>

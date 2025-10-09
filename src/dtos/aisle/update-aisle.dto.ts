@@ -1,9 +1,9 @@
 
 import z from 'zod';
 import { DTO } from '../dto';
-import { AisleSchema } from './aisle.schema';
+import { CreateAisleSchema } from './create-aisle.dto';
 
-export const UpdateAisleSchema = AisleSchema.partial()
+export const UpdateAisleSchema = CreateAisleSchema.partial()
 
 export type UpdateAisleType = z.infer<typeof UpdateAisleSchema>
 

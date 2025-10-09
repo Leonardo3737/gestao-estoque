@@ -14,6 +14,7 @@ class User extends Model<UserType, CreateUserType> {
   declare roles: UserRoleType[];
   declare createdAt: Date;
   declare updatedAt: Date;
+  declare deletedAt: Date;
 }
 
 User.init({
@@ -40,10 +41,12 @@ User.init({
   },
   createdAt: DataTypes.DATE,
   updatedAt: DataTypes.DATE,
+  deletedAt: DataTypes.DATE,
 }, {
   sequelize,
   tableName: 'user',
-  underscored: true
+  underscored: true,
+  paranoid: true,
 })
 
 export default User

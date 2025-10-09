@@ -13,7 +13,6 @@ class Product extends Model<ProductType, CreateProductType> {
   declare categoryId: number
   declare currentStock: number
   declare expirationDate: Date
-  declare locationId: number
   declare createdAt: Date
   declare updatedAt: Date
   declare deletedAt: Date
@@ -41,10 +40,6 @@ Product.init({
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  locationId: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
   expirationDate: {
     type: DataTypes.DATE,
     allowNull: true,
@@ -58,16 +53,6 @@ Product.init({
   underscored: true,
   paranoid: true
 })
-
-Product.belongsTo(Location, {
-  foreignKey: 'locationId',
-  as: 'location'
-});
-
-Location.hasMany(Product, {
-  foreignKey: 'locationId',
-  as: 'products'
-});
 
 Product.belongsTo(Category, {
   foreignKey: 'categoryId',

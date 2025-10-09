@@ -3,7 +3,10 @@ import { WarehouseSchema } from "./warehouse.schema";
 import { DTO } from "../dto";
 
 export const CreateWarehouseSchema = WarehouseSchema.omit({
-  id: true
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  deletedAt: true,
 })
 
 export type CreateWarehouseType = z.infer<typeof CreateWarehouseSchema>

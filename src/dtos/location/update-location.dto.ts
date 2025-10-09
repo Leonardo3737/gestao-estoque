@@ -1,9 +1,9 @@
 
 import z from 'zod';
 import { DTO } from '../dto';
-import { LocationSchema } from './location.schema';
+import { CreateLocationSchema } from './create-location.dto';
 
-export const UpdateLocationSchema = LocationSchema.partial()
+export const UpdateLocationSchema = CreateLocationSchema.partial()
 
 export type UpdateLocationType = z.infer<typeof UpdateLocationSchema>
 

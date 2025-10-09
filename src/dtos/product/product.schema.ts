@@ -8,11 +8,10 @@ export const ProductSchema = z.object({
   categoryId: z.coerce.number(),
   category: CategorySchema.optional(),
   currentStock: z.coerce.number(),
-  expirationDate: z.date().optional(),
-  locationId: z.coerce.number(),
+  expirationDate: z.date().optional().nullable(),
   createdAt: z.date(),
-  updatedAt: z.date(),
-  deletedAt: z.date(),
+  updatedAt: z.date().nullable(),
+  deletedAt: z.date().nullable(),
 })
 
 export type ProductType = z.infer<typeof ProductSchema>

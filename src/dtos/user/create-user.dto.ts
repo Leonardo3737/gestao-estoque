@@ -6,6 +6,7 @@ export const CreateUserSchema = UserSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+  deletedAt: true,
 })
 
 export type CreateUserType = z.infer<typeof CreateUserSchema>

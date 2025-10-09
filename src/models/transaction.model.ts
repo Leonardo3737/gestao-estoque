@@ -8,6 +8,7 @@ import { TransactionTypeEnum } from '../enums/transaction-type.enum';
 import { ListUserType } from '../dtos/user/list-user.dto';
 import { ProductType } from '../dtos/product/product.schema';
 import Product from './product.model';
+import { TransactionLocationType } from '../dtos/transaction-location/transaction-location.schema';
 
 class Transaction extends Model<TransactionType, CreateTransactionType> {
   declare id: number;
@@ -17,6 +18,7 @@ class Transaction extends Model<TransactionType, CreateTransactionType> {
   declare productId: number;
   declare product: ProductType;
   declare quantity: number;
+  declare transactionLocations: TransactionLocationType[];
   declare date: Date;
   declare createdAt: Date;
   declare updatedAt: Date;

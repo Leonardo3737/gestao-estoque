@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { AppError } from "../errors/app.error";
 import { ValidationError } from "../errors/validation.error";
+import { SequelizeScopeError } from "sequelize";
 
 export default function responseError(
   error: Error,

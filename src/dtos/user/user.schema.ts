@@ -14,7 +14,8 @@ export const UserSchema = z.object({
   password: z.string().min(6).max(100),
   roles: z.lazy(() => z.array(UserRoleSchema)).optional(),
   createdAt: z.date(),
-  updatedAt: z.date(),
+  updatedAt: z.date().nullable(),
+  deletedAt: z.date().nullable(),
 })
 
 export type UserType = z.infer<typeof UserSchema>
