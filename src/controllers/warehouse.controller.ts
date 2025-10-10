@@ -19,46 +19,61 @@ export class WarehouseController extends BaseController<Warehouse, WarehouseServ
     return "/warehouse"
   }
 
-  protected managerEndPoints(): EndPointType[] {
-    return [{
-      path: "/",
-      method: "post",
-      handle: async (req, res) => {
-        const data = new CreateWarehouseDTO(req.body)
-        const warehouse = await this.service.create(data)
-        res.status(201).send(warehouse)
-      }
-    },
-    {
-      path: '/',
-      method: 'get',
-      handle: async (req, res) => {
-        const filters = new FilterWarehouseDTO(req.query)
+  protected operatorEndPoints(): EndPointType[] {
+    return [
+      {
+        path: '/',
+        method: 'get',
+        handle: async (req, res) => {
+          const filters = new FilterWarehouseDTO(req.query)
 
-        const warehouse = await this.service.listAll(filters)
-        res.status(200).send(warehouse)
-      }
-    },
-    {
-      path: '/:id',
-      method: 'patch',
-      handle: async (req, res) => {
-        const data = new UpdateWarehouseDTO(req.body)
-        const warehouse = getParamsId(req)
-        await this.service.alter(warehouse, data)
-        res.status(204).send()
-      }
-    },
-    {
-      path: '/:id',
-      method: 'delete',
-      handle: async (req, res) => {
-        const id = getParamsId(req)
-        await this.service.delete(id)
-        res.status(204).send()
-      }
-    },
-  ]
+          const warehouses = await this.service.listAll(filters)
+          res.status(200).send(warehouses)
+        }
+      },
+      {
+        path: '/:id',
+        method: 'get',
+        handle: async (req, res) => {
+          const warehouseId = getParamsId(req)
+          const warehouse = await this.service.listById(warehouseId)
+          res.status(200).send(warehouse)
+        }
+      },
+    ]
+  }
+
+  protected managerEndPoints(): EndPointType[] {
+    return [
+      {
+        path: "/",
+        method: "post",
+        handle: async (req, res) => {
+          const data = new CreateWarehouseDTO(req.body)
+          const warehouse = await this.service.create(data)
+          res.status(201).send(warehouse)
+        }
+      },
+      {
+        path: '/:id',
+        method: 'patch',
+        handle: async (req, res) => {
+          const data = new UpdateWarehouseDTO(req.body)
+          const warehouse = getParamsId(req)
+          await this.service.alter(warehouse, data)
+          res.status(204).send()
+        }
+      },
+      {
+        path: '/:id',
+        method: 'delete',
+        handle: async (req, res) => {
+          const id = getParamsId(req)
+          await this.service.delete(id)
+          res.status(204).send()
+        }
+      },
+    ]
   }
 
 } 

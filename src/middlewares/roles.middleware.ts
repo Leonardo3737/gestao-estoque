@@ -18,7 +18,7 @@ export function rolesMiddleware(role?: RolesEnum, path?: string) {
 
 
     if (!user) {
-      throw new AppError('token is required', 401, 'UNAUTHORIZED');
+      throw new AppError('invalid token', 401, 'UNAUTHORIZED');
     }
 
     const { path: reqPath } = req

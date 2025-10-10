@@ -22,13 +22,13 @@ export abstract class BaseController<
   constructor(
     {
       app,
-      service
+      service,
     }: {
       app: Application,
-      service: TService
-    }) {
-
-      this.service = service
+      service: TService,
+    }
+  ) {
+    this.service = service
 
     // DISPONIBILIZAR TODOS END-POINTS PUBLICOS ANTES DE APLICAR OS MIDDLEWARES
     if (this.publicEndPoints) {
@@ -44,7 +44,7 @@ export abstract class BaseController<
     // APLICANDO MIDDLEWARES
 
     // DEFAULT
-    if (this.defaultEndPoints) {      
+    if (this.defaultEndPoints) {
       app.use(
         this.basePath(),
         this.applyEndPoints(

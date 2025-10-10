@@ -8,9 +8,13 @@ import { CategoryController } from "../controllers/category.controller";
 import { ProductController } from "../controllers/product.controller";
 import { TransactionController } from "../controllers/transaction.controller";
 import { TransactionLocationController } from "../controllers/transaction-location.controller";
+import { requestLogMiddleware } from "../middlewares/request-log.middleware";
+import { RequestController } from "../controllers/request.controller";
 
 export function controllersStartup(app: Application) {
 
+  app.use(requestLogMiddleware);
+  
   /* USER */
   new UserController(app)
 
@@ -37,4 +41,7 @@ export function controllersStartup(app: Application) {
 
   /* TRANSACTION LOCATION */
   new TransactionLocationController(app)
+
+  /* REQUEST LOGS */
+  new RequestController(app)
 }

@@ -9,7 +9,7 @@ export default function responseError(
   response: Response,
   _next: NextFunction
 ) {
-
+  response.locals!.responseData = error
   console.log(error);
 
   if (error instanceof AppError) {

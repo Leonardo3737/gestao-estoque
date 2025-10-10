@@ -26,7 +26,7 @@ export class TransactionController extends BaseController<Transaction, Transacti
         path: "/",
         method: "post",
         handle: async (req, res) => {
-          const data = new CreateTransactionDTO({...req.body, userId: req.user?.sub})
+          const data = new CreateTransactionDTO({ ...req.body, userId: req.user?.sub })
           const transaction = await this.service.create(data)
           res.status(201).send(transaction)
         }
@@ -60,6 +60,11 @@ export class TransactionController extends BaseController<Transaction, Transacti
           res.status(204).send()
         }
       },
+    ]
+  }
+
+  protected adminEndPoints(): EndPointType[] {
+    return [
       {
         path: '/:id',
         method: 'delete',
