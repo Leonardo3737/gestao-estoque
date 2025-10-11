@@ -1,8 +1,8 @@
 import z from "zod";
-import { ProductSchema, ProductType } from "../product/product.schema";
-import { ListUserSchema } from "../user/list-user.dto";
 import { TransactionTypeEnum } from "../../enums/transaction-type.enum";
+import { ProductSchema } from "../product/product.schema";
 import { TransactionListTransactionLocationSchema } from "../transaction-location/transaction-location.schema";
+import { ListUserSchema } from "../user/list-user.dto";
 
 export const TransactionSchema = z.object({
   id: z.number(),
@@ -14,7 +14,6 @@ export const TransactionSchema = z.object({
     return z.array(TransactionListTransactionLocationSchema).optional().nullable()
   },
   date: z.coerce.date(),
-  quantity: z.number(),
   type: z.enum(TransactionTypeEnum),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date().nullable(),

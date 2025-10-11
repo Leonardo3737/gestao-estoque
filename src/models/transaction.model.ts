@@ -1,14 +1,13 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/db-connection';
-import { CreateTransactionType } from '../dtos/transaction/create-transaction.dto';
-import { RolesEnum } from '../enums/roles.enum';
-import { TransactionType } from '../dtos/transaction/transaction.schema';
-import User from './user.model';
-import { TransactionTypeEnum } from '../enums/transaction-type.enum';
-import { ListUserType } from '../dtos/user/list-user.dto';
 import { ProductType } from '../dtos/product/product.schema';
-import Product from './product.model';
 import { TransactionLocationType } from '../dtos/transaction-location/transaction-location.schema';
+import { CreateTransactionType } from '../dtos/transaction/create-transaction.dto';
+import { TransactionType } from '../dtos/transaction/transaction.schema';
+import { ListUserType } from '../dtos/user/list-user.dto';
+import { TransactionTypeEnum } from '../enums/transaction-type.enum';
+import Product from './product.model';
+import User from './user.model';
 
 class Transaction extends Model<TransactionType, CreateTransactionType> {
   declare id: number;
@@ -17,7 +16,6 @@ class Transaction extends Model<TransactionType, CreateTransactionType> {
   declare user: ListUserType;
   declare productId: number;
   declare product: ProductType;
-  declare quantity: number;
   declare transactionLocations: TransactionLocationType[];
   declare date: Date;
   declare createdAt: Date;
@@ -40,10 +38,6 @@ Transaction.init({
     allowNull: false
   },
   productId: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  quantity: {
     type: DataTypes.INTEGER,
     allowNull: false
   },

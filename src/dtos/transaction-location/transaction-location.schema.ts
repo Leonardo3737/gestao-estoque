@@ -1,7 +1,7 @@
 import z from "zod";
-import { TransactionSchema } from "../transaction/transaction.schema";
-import { LocationSchema } from "../location/location.schema";
 import { DTO } from "../dto";
+import { LocationSchema } from "../location/location.schema";
+import { TransactionSchema } from "../transaction/transaction.schema";
 
 export const TransactionLocationSchema = z.object({
   id: z.number(),
@@ -13,6 +13,7 @@ export const TransactionLocationSchema = z.object({
   get location(): z.ZodOptional<z.ZodNullable<typeof LocationSchema>> {
     return z.nullable(LocationSchema).optional()
   },
+  quantity: z.number(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date().nullable(),
   deletedAt: z.coerce.date().nullable(),

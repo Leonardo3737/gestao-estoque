@@ -1,6 +1,5 @@
 import { FilterTransactionType } from "../dtos/transaction/filter-transaction.dto";
-import { ListTransactionDTO, ListTransactionType } from "../dtos/transaction/list-transaction.dto";
-import { TransactionType } from "../dtos/transaction/transaction.schema";
+import { ListTransactionDTO } from "../dtos/transaction/list-transaction.dto";
 import Transaction from "../models/transaction.model";
 import { BaseRepository } from './base.repository';
 
@@ -15,21 +14,22 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       {
         include: [
           { association: 'user' },
+          { association: 'transactionLocations' },
           {
             association: 'product',
-            include: [{ association: 'category' }]
+            include: [ { association: 'category' } ]
           },
           {
             association: 'transactionLocations',
-            include: [{
+            include: [ {
               association: 'location',
               include: [
                 {
                   association: 'aisle',
-                  include: [{ association: 'warehouse' }]
+                  include: [ { association: 'warehouse' } ]
                 }
               ]
-            }]
+            } ]
           },
         ]
       }
@@ -45,8 +45,12 @@ export class TransactionRepository extends BaseRepository<Transaction> {
       },
       include: [
         {
+          association: 'transactionLocations',
+          include: [ { association: 'location' } ]
+        },
+        {
           association: 'product',
-          include: [{ association: 'category' }]
+          include: [ { association: 'category' } ]
         }
       ]
     })
