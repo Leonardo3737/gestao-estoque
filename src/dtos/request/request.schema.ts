@@ -1,10 +1,14 @@
 import z from "zod";
+import { DTO } from '../dto';
+import { AdminListUserSchema } from '../user/admin-list-user.dto';
 
 export const RequestSchema = z.object({
   id: z.number().optional().nullable(),
   method: z.string().min(1).max(10),
   endpoint: z.string(),
   statusCode: z.number().int(),
+  userId: z.number().int().optional().nullable(),
+  user: AdminListUserSchema.optional().nullable(),
   body: z.record(z.string(), z.any()).optional().nullable(),
   response: z.record(z.string(), z.any()).optional().nullable(),
   ipAddress: z.string().optional().nullable(),
@@ -22,3 +26,9 @@ export const CreateRequestSchema = RequestSchema.omit({
 
 export type RequestType = z.infer<typeof RequestSchema>;
 export type CreateRequestType = z.infer<typeof CreateRequestSchema>;
+
+export class RequestDTO extends DTO<typeof RequestSchema> {
+  protected rules() {
+    return RequestSchema
+  }
+}
