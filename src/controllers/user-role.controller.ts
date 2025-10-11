@@ -64,6 +64,8 @@ export class UserRoleController extends BaseController<UserRole, UserRolesServic
           const data = new CreateUserRoleDTO(req.body)
 
           const newRole = await this.service.create(data)
+
+          res.locals.responseData = newRole
           res.status(201).send(newRole)
         }
       },

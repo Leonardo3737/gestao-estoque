@@ -1,6 +1,6 @@
 import z from "zod";
 import { DTO } from '../dto';
-import { AdminListUserSchema } from '../user/admin-list-user.dto';
+import { ListUserByAdminSchema } from '../user/list-user.dto';
 
 export const RequestSchema = z.object({
   id: z.number().optional().nullable(),
@@ -8,7 +8,7 @@ export const RequestSchema = z.object({
   endpoint: z.string(),
   statusCode: z.number().int(),
   userId: z.number().int().optional().nullable(),
-  user: AdminListUserSchema.optional().nullable(),
+  user: ListUserByAdminSchema.optional().nullable(),
   body: z.record(z.string(), z.any()).optional().nullable(),
   response: z.record(z.string(), z.any()).optional().nullable(),
   ipAddress: z.string().optional().nullable(),

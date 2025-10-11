@@ -10,6 +10,7 @@ import { TransactionController } from "../controllers/transaction.controller";
 import { TransactionLocationController } from "../controllers/transaction-location.controller";
 import { requestLogMiddleware } from "../middlewares/request-log.middleware";
 import { RequestController } from "../controllers/request.controller";
+import { StockController } from '../controllers/stock.controller';
 
 export function controllersStartup(app: Application) {
 
@@ -42,6 +43,10 @@ export function controllersStartup(app: Application) {
   /* TRANSACTION LOCATION */
   new TransactionLocationController(app)
 
+  /* STOCK */
+  new StockController(app)
+  
   /* REQUEST LOGS */
   new RequestController(app)
+
 }

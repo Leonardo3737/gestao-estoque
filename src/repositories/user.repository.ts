@@ -1,7 +1,7 @@
+import { Attributes, WhereOptions } from "sequelize";
 import { UserType } from "../dtos/user/user.schema";
 import User from "../models/user.model";
 import { BaseRepository } from "./base.repository";
-import { Attributes, WhereOptions } from "sequelize";
 
 export class UserRepository extends BaseRepository<User> {
 
@@ -21,12 +21,13 @@ export class UserRepository extends BaseRepository<User> {
     return user
   }
 
-  override async listAll(filters?: WhereOptions<Attributes<User>>): Promise<User[] | null> {
+  override async listAll(filters?: WhereOptions<Attributes<User>>): Promise<User[]> {
     const user = await User.findAll({
       include: { association: 'roles' },
       where: {
         ...filters
-      }
+      },
+      order: [ [ 'created_at', 'DESC' ], ]
     })
     return user
   }

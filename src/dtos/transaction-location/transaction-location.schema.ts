@@ -22,14 +22,14 @@ export const TransactionLocationSchema = z.object({
 export type TransactionLocationType = z.infer<typeof TransactionLocationSchema>
 
 
-export const TransactionListTransactionLocationSchema = TransactionLocationSchema.omit({
+export const ListTransactionLocationByTransactionSchema = TransactionLocationSchema.omit({
   transaction: true
 })
 
-export type TransactionListTransactionLocationType = z.infer<typeof TransactionListTransactionLocationSchema>
+export type ListTransactionLocationByTransactionType = z.infer<typeof ListTransactionLocationByTransactionSchema>
 
-export class TransactionListTransactionLocationDTO extends DTO<typeof TransactionListTransactionLocationSchema> {
+export class ListTransactionLocationByTransactionDTO extends DTO<typeof ListTransactionLocationByTransactionSchema> {
   protected rules() {
-    return TransactionListTransactionLocationSchema
+    return ListTransactionLocationByTransactionSchema
   }
 }

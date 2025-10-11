@@ -1,5 +1,6 @@
 import z from "zod";
 import { CategorySchema } from "../category/category.schema";
+import { ListStockByProductSchema } from '../stock/list-stock.dto';
 
 export const ProductSchema = z.object({
   id: z.number(),
@@ -7,6 +8,9 @@ export const ProductSchema = z.object({
   description: z.string().min(1).max(255).optional(),
   categoryId: z.coerce.number(),
   category: CategorySchema.optional(),
+  get stock() {
+    return z.array(ListStockByProductSchema).optional()
+  },
   currentStock: z.coerce.number(),
   expirationDate: z.date().optional().nullable(),
   createdAt: z.date(),

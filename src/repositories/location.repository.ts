@@ -15,9 +15,17 @@ export class LocationRepository extends BaseRepository<Location> {
         include: [
           {
             association: 'aisle',
-            include: [{ association: 'warehouse' }]
+            include: [ { association: 'warehouse' } ]
+          },
+          {
+            association: 'stock',
+            include: [
+              {
+                association: 'product'
+              }
+            ]
           }
-        ]
+        ],
       }
     )
     return transaction ? new ListLocationDTO(transaction).getAll() as Location : null
@@ -32,9 +40,10 @@ export class LocationRepository extends BaseRepository<Location> {
       include: [
         {
           association: 'aisle',
-          include: [{ association: 'warehouse' }]
+          include: [ { association: 'warehouse' } ]
         }
-      ]
+      ],
+      order: [ [ 'created_at', 'DESC' ], ]
     })
 
     const aux = transactions.map(transaction => {

@@ -28,6 +28,7 @@ export class TransactionController extends BaseController<Transaction, Transacti
         handle: async (req, res) => {
           const data = new CreateTransactionDTO({ ...req.body, userId: req.user?.sub })
           const transaction = await this.service.create(data)
+          //res.locals.responseData = transaction
           res.status(201).send(transaction)
         }
       },

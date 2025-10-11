@@ -12,7 +12,15 @@ export class ProductRepository extends BaseRepository<Product> {
     const product = await Product.findByPk(
       id,
       {
-        include: [ { association: 'category' } ]
+        include: [
+          { association: 'category' },
+          {
+            association: 'stock',
+            include: [
+              { association: 'location' }
+            ]
+          }
+        ]
       }
     )
     return product ? new ListProductDTO(product).getAll() as Product : null
@@ -24,7 +32,8 @@ export class ProductRepository extends BaseRepository<Product> {
       where: {
         ...filters
       },
-      include: [ { association: 'category' } ]
+      include: [ { association: 'category' } ],
+      order: [ [ 'created_at', 'DESC' ], ]
     })
 
     const aux = products.map(product => {

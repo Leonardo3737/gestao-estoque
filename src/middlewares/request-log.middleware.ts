@@ -4,9 +4,6 @@ import RequestModel from "../models/request.model";
 export function requestLogMiddleware(req: Request, res: Response, next: NextFunction) {
 
   res.on("finish", async () => {
-    console.log({
-      user: req.user
-    });
 
     await RequestModel.create({
       method: req.method,

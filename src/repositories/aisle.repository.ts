@@ -12,7 +12,7 @@ export class AisleRepository extends BaseRepository<Aisle> {
     const transaction = await Aisle.findByPk(
       id,
       {
-        include: [{ association: 'warehouse' }]
+        include: [ { association: 'warehouse' } ]
       }
     )
     return transaction ? new ListAisleDTO(transaction).getAll() as Aisle : null
@@ -24,7 +24,8 @@ export class AisleRepository extends BaseRepository<Aisle> {
       where: {
         ...filters
       },
-      include: [{ association: 'warehouse' }]
+      include: [ { association: 'warehouse' } ],
+      order: [ [ 'created_at', 'DESC' ], ]
     })
 
     const aux = transactions.map(transaction => {

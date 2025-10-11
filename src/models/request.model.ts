@@ -1,13 +1,13 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/db-connection";
 import { CreateRequestType, RequestType } from "../dtos/request/request.schema";
-import { AdminListUserType } from '../dtos/user/admin-list-user.dto';
+import { ListUserByAdminType } from '../dtos/user/list-user.dto';
 import User from './user.model';
 
 class Request extends Model<RequestType, CreateRequestType> {
   declare id: number
   declare userId: number
-  declare user?: AdminListUserType
+  declare user?: ListUserByAdminType
   declare method: string
   declare endpoint: string
   declare statusCode: number

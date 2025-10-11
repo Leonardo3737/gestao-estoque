@@ -1,6 +1,6 @@
 import z from "zod";
 import { DTO } from "../dto";
-import { CreateTransactionLocationSchema } from '../transaction-location/create-transaction-location.dto';
+import { CreateTransactionLocationByTransactionSchema } from '../transaction-location/create-transaction-location.dto';
 import { TransactionSchema } from "./transaction.schema";
 
 export const CreateTransactionSchema = TransactionSchema.omit({
@@ -12,7 +12,7 @@ export const CreateTransactionSchema = TransactionSchema.omit({
   updatedAt: true,
   deletedAt: true,
 }).extend({
-  createTransactionLocations: z.array(CreateTransactionLocationSchema.omit({ transactionId: true })).min(1)
+  createTransactionLocations: CreateTransactionLocationByTransactionSchema
 })
 
 export type CreateTransactionType = z.infer<typeof CreateTransactionSchema>

@@ -9,8 +9,6 @@ export function authMiddleware(req: Request, _: Response, next: NextFunction) {
 
   const jwtPayload = isJWTValid(token)  
 
-  
-  
   if (!token) {
     throw new AppError('token is required', 401, 'UNAUTHORIZED')
   }

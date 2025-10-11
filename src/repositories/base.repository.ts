@@ -10,7 +10,7 @@ export abstract class BaseRepository<TModel extends Model> {
     await this.Model.update(newData, { where, ...(transaction ? { transaction } : {}) })
   }
 
-  async create(newData: TModel['_creationAttributes'], transaction?: Transaction): Promise<object> {
+  async create(newData: TModel[ '_creationAttributes' ], transaction?: Transaction): Promise<TModel> {
     try {
       const process = await this.Model.create(newData, (transaction ? { transaction } : {}))
       return process.dataValues
@@ -43,12 +43,13 @@ export abstract class BaseRepository<TModel extends Model> {
     return data
   }
 
-  async listAll(filters?: WhereOptions<Attributes<TModel>>): Promise<TModel[] | null> {
+  async listAll(filters?: WhereOptions<Attributes<TModel>>): Promise<TModel[]> {
 
     const datas = await this.Model.findAll({
       where: {
         ...filters
-      }
+      },
+      order: [ [ 'created_at', 'DESC' ], ],
     })
     return datas
   }

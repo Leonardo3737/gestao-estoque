@@ -52,7 +52,8 @@ export class TransactionRepository extends BaseRepository<Transaction> {
           association: 'product',
           include: [ { association: 'category' } ]
         }
-      ]
+      ],
+      order: [ [ 'created_at', 'DESC' ], ]
     })
 
     const aux = transactions.map(transaction => {

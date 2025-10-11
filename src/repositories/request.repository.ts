@@ -33,7 +33,8 @@ export class RequestRepository extends BaseRepository<Request> {
           association: 'user',
           include: [ { association: 'roles' } ]
         }
-      ]
+      ],
+      order: [ [ 'created_at', 'DESC' ], ]
     })
 
     const aux = requesties.map(request => {

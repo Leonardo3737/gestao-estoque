@@ -1,7 +1,7 @@
 import z from "zod";
 import { TransactionTypeEnum } from "../../enums/transaction-type.enum";
 import { ProductSchema } from "../product/product.schema";
-import { TransactionListTransactionLocationSchema } from "../transaction-location/transaction-location.schema";
+import { ListTransactionLocationByTransactionSchema } from "../transaction-location/transaction-location.schema";
 import { ListUserSchema } from "../user/list-user.dto";
 
 export const TransactionSchema = z.object({
@@ -11,7 +11,7 @@ export const TransactionSchema = z.object({
   userId: z.coerce.number(),
   user: ListUserSchema.optional(),
   get transactionLocations() {
-    return z.array(TransactionListTransactionLocationSchema).optional().nullable()
+    return z.array(ListTransactionLocationByTransactionSchema).optional().nullable()
   },
   date: z.coerce.date(),
   type: z.enum(TransactionTypeEnum),
@@ -19,5 +19,7 @@ export const TransactionSchema = z.object({
   updatedAt: z.coerce.date().nullable(),
   deletedAt: z.coerce.date().nullable(),
 })
+
+// cancelled_by_inventory_id
 
 export type TransactionType = z.infer<typeof TransactionSchema>

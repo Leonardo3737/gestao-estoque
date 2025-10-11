@@ -1,17 +1,17 @@
-import { AppError } from "../errors/app.error"
+import bcrypt from 'bcrypt'
+import { InferAttributes } from "sequelize"
+import { DTO } from "../dtos/dto"
+import { ListUserByAdminDTO, ListUserByAdminType } from "../dtos/user/list-user.dto"
 import { CreateUserType } from "../dtos/user/create-user.dto"
+import { FilterUserType } from "../dtos/user/filter-user.dto"
+import { UpdateUserType } from "../dtos/user/update-user.dto"
 import { UserAuthDTO } from "../dtos/user/user-auth.dto"
+import { AppError } from "../errors/app.error"
+import User from "../models/user.model"
 import { UserRepository } from "../repositories/user.repository"
 import { encryptPassword } from "../utils/encrypt"
-import bcrypt from 'bcrypt'
 import { genJWT } from "../utils/jwt"
-import { UpdateUserDTO, UpdateUserType } from "../dtos/user/update-user.dto"
-import { FilterUserDTO, FilterUserType } from "../dtos/user/filter-user.dto"
 import { BaseService } from "./base.service"
-import User from "../models/user.model"
-import { DTO } from "../dtos/dto"
-import { InferAttributes } from "sequelize"
-import { AdminListUserDTO, AdminListUserType } from "../dtos/user/admin-list-user.dto"
 
 // THIS SERVICE IS AVAILABLE ONLY FOR ADMIN
 export class UserService extends BaseService<User> {
@@ -20,14 +20,14 @@ export class UserService extends BaseService<User> {
     super(new UserRepository())
   }
 
-  override async create(newUser: DTO<any>): Promise<AdminListUserType> {
+  override async create(newUser: DTO<any>): Promise<ListUserByAdminType> {
     const user: CreateUserType = newUser.getAll()
 
     await this.checkConflict(user.phone, user.register)
 
     user.password = await encryptPassword(user.password)
     const res = await this.repository.create(user)
-    return new AdminListUserDTO(res).getAll()
+    return new ListUserByAdminDTO(res).getAll()
   }
 
   override async alter(userId: number, newUser: DTO<any>): Promise<void> {
@@ -40,20 +40,20 @@ export class UserService extends BaseService<User> {
   }
 
 
-  override async listById(id: number): Promise<AdminListUserType> {
+  override async listById(id: number): Promise<ListUserByAdminType> {
     const user = await this.repository.listById(id)
 
     if (!user) {
       throw new AppError('User not found', 404)
     }
 
-    const userWithouPassword = new AdminListUserDTO(user)
+    const userWithouPassword = new ListUserByAdminDTO(user)
 
     return userWithouPassword.getAll()
   }
 
 
-  override async listAll(filters?: DTO<any>): Promise<AdminListUserType[]> {
+  override async listAll(filters?: DTO<any>): Promise<ListUserByAdminType[]> {
 
     const auxFilter: FilterUserType = filters?.getAll()
 
@@ -63,7 +63,7 @@ export class UserService extends BaseService<User> {
       throw new AppError('User not found', 404)
     }
 
-    const userWithoutPassword = users.map(user => new AdminListUserDTO(user).getAll())
+    const userWithoutPassword = users.map(user => new ListUserByAdminDTO(user).getAll())
 
     return userWithoutPassword
   }

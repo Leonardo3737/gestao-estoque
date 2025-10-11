@@ -15,3 +15,15 @@ export class ListUserDTO extends DTO<typeof ListUserSchema> {
     return ListUserSchema
   }
 }
+
+export const ListUserByAdminSchema = UserSchema.omit({
+  password: true
+})
+
+export type ListUserByAdminType = z.infer<typeof ListUserByAdminSchema>
+
+export class ListUserByAdminDTO extends DTO<typeof ListUserByAdminSchema> {
+  protected rules() {
+    return ListUserByAdminSchema
+  }
+}
