@@ -27,16 +27,6 @@ export class UserController extends BaseController<User, UserService> {
   publicEndPoints(): EndPointType[] {
     return [
       {
-        path: '/',
-        method: 'post',
-        handle: async (req: Request, res: Response) => {
-          const data = new CreateUserDTO(req.body)
-
-          const newUser = await this.service.create(data)
-          res.status(201).send(newUser)
-        }
-      },
-      {
         path: '/auth',
         method: 'post',
         handle: async (req: Request, res: Response) => {
@@ -75,6 +65,16 @@ export class UserController extends BaseController<User, UserService> {
 
   protected adminEndPoints(): EndPointType[] {
     return [
+      {
+        path: '/',
+        method: 'post',
+        handle: async (req: Request, res: Response) => {
+          const data = new CreateUserDTO(req.body)
+
+          const newUser = await this.service.create(data)
+          res.status(201).send(newUser)
+        }
+      },
       {
         path: '/:id',
         method: 'delete',
