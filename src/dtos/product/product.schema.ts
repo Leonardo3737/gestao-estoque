@@ -13,6 +13,7 @@ export const ProductSchema = z.object({
   },
   currentStock: z.coerce.number(),
   expirationDate: z.coerce.date().optional().nullable(),
+  minimumStock: z.coerce.number().optional().nullable(),
   createdAt: z.date(),
   updatedAt: z.date().nullable(),
   deletedAt: z.date().nullable(),

@@ -14,6 +14,7 @@ export class StockService extends BaseService<Stock> {
 
   async executeTransactions(solicitations: CreateStockType[], transactioType: TransactionTypeEnum, dbTransaction: Transaction) {
     for (let solicitation of solicitations) {
+
       const stocks = await this.repository.listAll({
         productId: solicitation.productId,
         locationId: solicitation.locationId
@@ -32,8 +33,8 @@ export class StockService extends BaseService<Stock> {
 
       if (!stock) {
         await this.repository.create(solicitation, dbTransaction)
-        return
-      }
+        continue
+      }      
 
       await this.repository.alter(stock.id, {
         currentStock: calculateNewStock(stock.currentStock, transactioType, solicitation.currentStock)

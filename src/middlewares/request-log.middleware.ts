@@ -5,15 +5,27 @@ export function requestLogMiddleware(req: Request, res: Response, next: NextFunc
 
   res.on("finish", async () => {
 
-    await RequestModel.create({
-      method: req.method,
-      endpoint: req.originalUrl,
-      statusCode: res.statusCode,
-      body: req.body,
-      response: res.locals?.responseData,
-      ipAddress: req.ip,
-      userId: req.user?.sub
-    });
+    try {
+      await RequestModel.create({
+        method: req.method,
+        endpoint: req.originalUrl,
+        statusCode: res.statusCode,
+        body: req.body,
+        response: res.locals?.responseData,
+        ipAddress: req.ip,
+        userId: req.user?.sub
+      });
+    }
+    catch {
+      await RequestModel.create({
+        method: req.method,
+        endpoint: req.originalUrl,
+        statusCode: res.statusCode,
+        body: req.body,
+        response: res.locals?.responseData,
+        ipAddress: req.ip,
+      });
+    }
   });
 
   next();

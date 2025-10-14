@@ -42,7 +42,7 @@ Stock.init({
   deletedAt: DataTypes.DATE
 }, {
   sequelize,
-  tableName: 'product_location',
+  tableName: 'stock',
   underscored: true,
   paranoid: true,
   indexes: [

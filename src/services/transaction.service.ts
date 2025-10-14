@@ -29,14 +29,13 @@ export class TransactionService extends BaseService<Transaction> {
 
     try {
       const newTransaction = newTransactionDTO.getAll() as CreateTransactionType
-
+      
       const stockSolicitations: CreateStockType[] = newTransaction.createTransactionLocations.map(tl => ({
         productId: newTransaction.productId,
         locationId: tl.locationId,
         currentStock: tl.quantity
       }))
-
-
+      
       const product = await this.productRepository.listById(newTransaction.productId)
 
       if (!product) {

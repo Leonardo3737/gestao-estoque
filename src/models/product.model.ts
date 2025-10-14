@@ -12,6 +12,7 @@ class Product extends Model<ProductType, CreateProductType> {
   declare description: string
   declare categoryId: number
   declare currentStock: number
+  declare minimumStock: number
   declare expirationDate: Date
   declare createdAt: Date
   declare updatedAt: Date
@@ -37,6 +38,10 @@ Product.init({
     allowNull: false,
   },
   currentStock: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  minimumStock: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
