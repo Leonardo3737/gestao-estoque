@@ -9,7 +9,7 @@ export class AisleRepository extends BaseRepository<Aisle> {
   }
 
   async listById(id: number): Promise<Aisle | null> {
-    const transaction = await Aisle.findByPk(
+    const transaction = await this.Model.findByPk(
       id,
       {
         include: [ { association: 'warehouse' } ]
@@ -20,7 +20,7 @@ export class AisleRepository extends BaseRepository<Aisle> {
 
   async listAll(filters?: FilterAisleType): Promise<Aisle[]> {
 
-    const transactions = await Aisle.findAll({
+    const transactions = await this.Model.findAll({
       where: {
         ...filters
       },

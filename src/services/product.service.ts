@@ -6,4 +6,12 @@ export class ProductService extends BaseService<Product> {
   constructor() {
     super(new ProductRepository())
   }
+
+  async getkpi() {
+    return await (this.repository as ProductRepository).getKpi()
+  }
+
+  async getKpiByWarehouse(warehouseId: number) {
+    return await (this.repository as ProductRepository).getKpiByWarehouse(warehouseId)
+  }
 }

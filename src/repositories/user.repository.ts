@@ -11,18 +11,18 @@ export class UserRepository extends BaseRepository<User> {
 
   // DEVE SER CHAMDA APENAS EM UserService.resetPassword
   async resetPassword(id: number, password: string): Promise<void> {
-    await User.update({ password }, { where: { id } })
+    await this.Model.update({ password }, { where: { id } })
   }
 
   async listById(id: number): Promise<User | null> {
-    const user = await User.findByPk(id, {
+    const user = await this.Model.findByPk(id, {
       include: { association: 'roles' }
     })
     return user
   }
 
   override async listAll(filters?: WhereOptions<Attributes<User>>): Promise<User[]> {
-    const user = await User.findAll({
+    const user = await this.Model.findAll({
       include: { association: 'roles' },
       where: {
         ...filters
@@ -33,7 +33,7 @@ export class UserRepository extends BaseRepository<User> {
   }
 
   async listUserByRegister(register: string): Promise<UserType | null> {
-    const user = await User.findOne({
+    const user = await this.Model.findOne({
       include: { association: 'roles' },
       where: {
         register

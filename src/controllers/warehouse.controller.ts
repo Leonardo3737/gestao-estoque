@@ -59,6 +59,7 @@ export class WarehouseController extends BaseController<Warehouse, WarehouseServ
         method: 'patch',
         handle: async (req, res) => {
           const data = new UpdateWarehouseDTO(req.body)
+          
           const warehouse = getParamsId(req)
           await this.service.alter(warehouse, data)
           res.status(204).send()

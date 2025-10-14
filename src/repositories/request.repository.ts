@@ -8,7 +8,7 @@ export class RequestRepository extends BaseRepository<Request> {
   }
 
   async listById(id: number): Promise<Request | null> {
-    const request = await Request.findByPk(
+    const request = await this.Model.findByPk(
       id,
       {
         include: [
@@ -24,7 +24,7 @@ export class RequestRepository extends BaseRepository<Request> {
 
   async listAll(filters?: any): Promise<Request[]> {
 
-    const requesties = await Request.findAll({
+    const requesties = await this.Model.findAll({
       where: {
         ...filters
       },

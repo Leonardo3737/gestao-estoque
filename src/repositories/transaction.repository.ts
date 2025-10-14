@@ -9,7 +9,7 @@ export class TransactionRepository extends BaseRepository<Transaction> {
   }
 
   async listById(id: number): Promise<Transaction | null> {
-    const transaction = await Transaction.findByPk(
+    const transaction = await this.Model.findByPk(
       id,
       {
         include: [
@@ -39,7 +39,7 @@ export class TransactionRepository extends BaseRepository<Transaction> {
 
   async listAll(filters?: FilterTransactionType): Promise<Transaction[]> {
 
-    const transactions = await Transaction.findAll({
+    const transactions = await this.Model.findAll({
       where: {
         ...filters
       },

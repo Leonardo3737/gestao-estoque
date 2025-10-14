@@ -23,6 +23,23 @@ export class ProductController extends BaseController<Product, ProductService> {
   protected operatorEndPoints(): EndPointType[] {
     return [
       {
+        path: "/kpi",
+        method: "get",
+        handle: async (req, res) => {
+          const kpi = await this.service.getkpi()
+          res.status(200).send(kpi)
+        }
+      },
+      {
+        path: "/kpi/:id",
+        method: "get",
+        handle: async (req, res) => {
+          const warehouseId = getParamsId(req)
+          const kpi = await this.service.getKpiByWarehouse(warehouseId)
+          res.status(200).send(kpi)
+        }
+      },
+      {
         path: "/",
         method: "post",
         handle: async (req, res) => {

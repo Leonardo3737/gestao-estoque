@@ -3,7 +3,7 @@ import { AppError } from '../errors/app.error';
 
 export abstract class BaseRepository<TModel extends Model> {
 
-  constructor(private Model: ModelStatic<TModel>) { }
+  constructor(protected Model: ModelStatic<TModel>) { }
 
   async alter(id: number, newData: Partial<InferAttributes<TModel>>, transaction?: Transaction): Promise<void> {
     const where = { id } as unknown as WhereOptions<Attributes<TModel>>
