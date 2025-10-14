@@ -22,4 +22,7 @@ app.use(responseError)
 
 DBconnectionTest()
 
-app.listen(PORT, ()=> console.log(`server is running | port: ${PORT}`))
+app.listen(PORT, ()=> {
+  console.clear()
+  console.log(`server is running | port: ${PORT}`)
+})
