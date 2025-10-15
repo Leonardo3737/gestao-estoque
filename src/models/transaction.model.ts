@@ -14,6 +14,7 @@ import Warehouse from './warehouse.model';
 class Transaction extends Model<TransactionType, CreateTransactionType> {
   declare id: number;
   declare type: TransactionTypeEnum;
+  declare totalQuantity: number;
   declare userId: number;
   declare user: ListUserType;
   declare productId: number;
@@ -38,6 +39,10 @@ Transaction.init({
     allowNull: false
   },
   userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  totalQuantity: {
     type: DataTypes.INTEGER,
     allowNull: false
   },

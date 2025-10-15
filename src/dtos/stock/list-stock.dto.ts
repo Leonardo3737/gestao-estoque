@@ -27,7 +27,7 @@ export const ListStockByLocationSchema = StockSchema.omit({
   location: true,
 })
 
-export type ListStocknByLocationType = z.infer<typeof ListStockByLocationSchema>
+export type ListStockByLocationType = z.infer<typeof ListStockByLocationSchema>
 
 export class ListStockByLocationDTO extends DTO<typeof ListStockByLocationSchema> {
   protected rules() {

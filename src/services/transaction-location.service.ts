@@ -1,5 +1,5 @@
 import { Transaction } from 'sequelize';
-import { CreateTransactionLocationByTransactionType } from '../dtos/transaction-location/create-transaction-location.dto';
+import { CreateTransactionLocationByTransactionType, CreateTransactionLocationType } from '../dtos/transaction-location/create-transaction-location.dto';
 import { CreateTransactionLocationDTO } from '../dtos/transaction-location/create-transaction-location.dto';
 import { FilterTransactionLocationDTO } from '../dtos/transaction-location/filter-transaction-location.dto';
 import { ListTransactionLocationDTO, ListTransactionLocationsType, ListTransactionLocationType } from '../dtos/transaction-location/list-transaction-location.dto';
@@ -11,17 +11,15 @@ export class TransactionLocationService {
   constructor() {
     this.repository = new TransactionLocationRepository()
   }
-  async executeTransactions(solicitations: CreateTransactionLocationByTransactionType, transactionId: number, dbTransaction: Transaction): Promise<number> {
-    let transactionAmount = 0
-
+  async executeTransactions(solicitations: CreateTransactionLocationByTransactionType, transactionId: number, dbTransaction: Transaction) {
+    
     for (let solicitation of solicitations) {
-      transactionAmount += solicitation.quantity
+      
       await this.repository.create({
-        ...solicitation,
+        ...(solicitation as CreateTransactionLocationType),
         transactionId: transactionId
       }, dbTransaction)
     }
-    return transactionAmount
   }
 
   async create(dto: CreateTransactionLocationDTO): Promise<ListTransactionLocationType> {

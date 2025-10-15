@@ -8,12 +8,14 @@ export const CreateTransactionSchema = TransactionSchema.omit({
   user: true,
   product: true,
   transactionLocations: true,
+  totalQuantity: true,
   warehouse: true,
   createdAt: true,
   updatedAt: true,
   deletedAt: true,
 }).extend({
-  createTransactionLocations: CreateTransactionLocationByTransactionSchema
+  createTransactionLocations: CreateTransactionLocationByTransactionSchema,
+  totalQuantity: z.coerce.number().optional().nullable()
 })
 
 export type CreateTransactionType = z.infer<typeof CreateTransactionSchema>
