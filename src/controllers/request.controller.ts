@@ -1,11 +1,11 @@
 import { Application } from "express";
 import { BaseController, EndPointType } from "./base.controller";
-import Request from '../models/request.model';
 import { getParamsId } from '../utils/get-params-id';
 import { RequestService } from "../services/request.service";
+import { FilterRequestDTO } from "../dtos/request/filter-request.schema copy 2";
 
 
-export class RequestController extends BaseController<Request, RequestService> {
+export class RequestController extends BaseController<RequestService> {
   constructor(app: Application) {
     super({
       app,
@@ -23,7 +23,8 @@ export class RequestController extends BaseController<Request, RequestService> {
         path: '/',
         method: 'get',
         handle: async (req, res) => {
-          const requests = await this.service.listAll()
+          const filters = new FilterRequestDTO(req.query)
+          const requests = await this.service.listAll(filters)
           res.status(200).send(requests)
         }
       },

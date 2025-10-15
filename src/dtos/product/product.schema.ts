@@ -11,7 +11,7 @@ export const ProductSchema = z.object({
   get stock() {
     return z.array(ListStockByProductSchema).optional()
   },
-  currentStock: z.coerce.number(),
+  currentStock: z.coerce.number().optional().nullable(),
   expirationDate: z.coerce.date().optional().nullable(),
   minimumStock: z.coerce.number().optional().nullable(),
   createdAt: z.date(),

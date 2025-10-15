@@ -1,6 +1,7 @@
 import z from "zod";
 import { DTO } from '../dto';
 import { ListUserByAdminSchema } from '../user/list-user.dto';
+import { FilterSchema } from "../util/filter.schema";
 
 export const RequestSchema = z.object({
   id: z.number().optional().nullable(),
@@ -17,18 +18,4 @@ export const RequestSchema = z.object({
   deletedAt: z.coerce.date().nullable(),
 });
 
-export const CreateRequestSchema = RequestSchema.omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  deletedAt: true,
-})
-
 export type RequestType = z.infer<typeof RequestSchema>;
-export type CreateRequestType = z.infer<typeof CreateRequestSchema>;
-
-export class RequestDTO extends DTO<typeof RequestSchema> {
-  protected rules() {
-    return RequestSchema
-  }
-}

@@ -1,13 +1,12 @@
 import { Application } from "express";
 import { BaseController, EndPointType } from "./base.controller";
-import TransactionLocation from '../models/transaction-location.model';
 import { getParamsId } from '../utils/get-params-id';
 import { CreateTransactionLocationDTO } from "../dtos/transaction-location/create-transaction-location.dto";
 import { FilterTransactionLocationDTO } from "../dtos/transaction-location/filter-transaction-location.dto";
 import { TransactionLocationService } from "../services/transaction-location.service";
 
 
-export class TransactionLocationController extends BaseController<TransactionLocation, TransactionLocationService> {
+export class TransactionLocationController extends BaseController<TransactionLocationService> {
   constructor(app: Application) {
     super({
       app,

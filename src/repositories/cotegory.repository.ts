@@ -1,8 +1,99 @@
+import { DatabaseError, ForeignKeyConstraintError, Op, UniqueConstraintError, ValidationError, WhereOptions } from "sequelize";
+import { CreateCategoryType } from "../dtos/category/create-category.dto";
+import { FilterCategoryType } from "../dtos/category/filter-category.dto";
+import { UpdateCategoryType } from "../dtos/category/update-category.dto";
 import Category from "../models/category.model";
-import { BaseRepository } from './base.repository';
+import { cleanObject } from "../utils/cleanObject";
+import { AppError } from "../errors/app.error";
+import { ListCategoriesType, ListCategoryDTO } from "../dtos/category/list-category.dto";
 
-export class CategoryRepository extends BaseRepository<Category> {
-  constructor() {
-    super(Category)
+export class CategoryRepository {
+  async listById(id: number): Promise<Category | null> {
+    const transaction = await Category.findByPk(
+      id,
+      {
+        include: [{ association: 'warehouse' }]
+      }
+    )
+    return transaction ? new ListCategoryDTO(transaction).getAll() as Category : null
+  }
+
+  async listAll(filters?: FilterCategoryType): Promise<ListCategoriesType> {
+
+    const page = filters?.page ?? 1
+    const perPage = filters?.perPage ?? 10
+    const search = filters?.search?.trim() ?? ''
+
+    delete filters?.page
+    delete filters?.perPage
+    delete filters?.search
+
+    const where: WhereOptions<Category> = {}
+
+    // Exemplo de filtro (ajuste conforme seus campos)
+    if (search) {
+      where.name = { [Op.iLike]: `%${search}%` }
+    }
+
+    // Conta total de registros
+    const count = await Category.count({ where })
+
+    const results = await Category.findAll({
+      where,
+      order: [['created_at', 'DESC']],
+      offset: (page - 1) * perPage,
+      limit: perPage
+    })
+
+    const data = results.map(item => new ListCategoryDTO(item).getAll())
+
+    const lastPage = Math.ceil(count / perPage)
+    const hasMore = page < lastPage
+    const from = count > 0 ? (page - 1) * perPage + 1 : 0
+    const to = Math.min(page * perPage, count)
+
+    return {
+      data,
+      meta: {
+        page,
+        count,
+        perPage,
+        hasMore,
+        lastPage,
+        from,
+        to
+      }
+    }
+  }
+
+  async alter(id: number, newData: UpdateCategoryType) {
+    await Category.update(cleanObject(newData), { where: { id } })
+  }
+
+  async create(newData: CreateCategoryType): Promise<Category> {
+    try {
+      const process = await Category.create(newData)
+      return process
+    }
+    catch (err) {
+      if (err instanceof ForeignKeyConstraintError) {
+        throw new AppError("Invalid foreign key: related record does not exist.", 400);
+      } else if (err instanceof UniqueConstraintError) {
+        throw new AppError("Duplicate value: this value must be unique.", 400);
+      } else if (err instanceof ValidationError) {
+        const messages = err.errors.map(e => e.message).join(", ");
+        throw new AppError(`Validation error: ${messages}`, 400);
+      } else if (err instanceof DatabaseError) {
+        console.error(err);
+        throw new AppError("Internal database error.", 500);
+      } else {
+        console.error(err);
+        throw new AppError("Unexpected error occurred.", 500);
+      }
+    }
+  }
+
+  async delete(id: number) {
+    await Category.destroy({ where: { id } })
   }
 }

@@ -1,6 +1,5 @@
 import { Application } from "express";
 import { BaseController, EndPointType } from "./base.controller";
-import Transaction from '../models/transaction.model';
 import { getParamsId } from '../utils/get-params-id';
 import { CreateTransactionDTO } from "../dtos/transaction/create-transaction.dto";
 import { FilterTransactionDTO } from "../dtos/transaction/filter-transaction.dto";
@@ -8,7 +7,7 @@ import { TransactionService } from "../services/transaction.service";
 import { UpdateTransactionDTO } from "../dtos/transaction/update-transaction.dto";
 
 
-export class TransactionController extends BaseController<Transaction, TransactionService> {
+export class TransactionController extends BaseController<TransactionService> {
   constructor(app: Application) {
     super({
       app,

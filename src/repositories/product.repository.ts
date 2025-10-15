@@ -1,18 +1,18 @@
-import { col, fn, literal, Op } from 'sequelize';
+import { col, DatabaseError, fn, ForeignKeyConstraintError, literal, Op, Transaction, UniqueConstraintError, ValidationError, WhereOptions } from 'sequelize';
 import { FilterProductType } from '../dtos/product/filter-product.dto';
-import { ListProductDTO } from '../dtos/product/list-product.dto';
+import { ListProductDTO, ListProductsType, ListProductType } from '../dtos/product/list-product.dto';
 import Product from "../models/product.model";
-import { BaseRepository } from './base.repository';
 import { KpiSchema, KpiType } from '../dtos/kpi/kpi.schema';
 import Stock from '../models/stock.model';
+import { cleanObject } from '../utils/cleanObject';
+import { UpdateProductType } from '../dtos/product/update-product.dto';
+import { CreateProductType } from '../dtos/product/create-product.dto';
+import { AppError } from '../errors/app.error';
 
-export class ProductRepository extends BaseRepository<Product> {
-  constructor() {
-    super(Product)
-  }
+export class ProductRepository {
 
-  async listById(id: number): Promise<Product | null> {
-    const product = await this.Model.findByPk(
+  async listById(id: number): Promise<ListProductType | null> {
+    const product = await Product.findByPk(
       id,
       {
         include: [
@@ -26,38 +26,69 @@ export class ProductRepository extends BaseRepository<Product> {
         ]
       }
     )
-    return product ? new ListProductDTO(product).getAll() as Product : null
+    return product ? new ListProductDTO(product).getAll() : null
   }
 
-  async listAll(filters?: FilterProductType): Promise<Product[]> {
+  async listAll(filters?: FilterProductType): Promise<ListProductsType> {
 
-    const products = await this.Model.findAll({
-      where: {
-        ...filters
-      },
+    const page = filters?.page ?? 1
+    const perPage = filters?.perPage ?? 10
+    const search = filters?.search?.trim() ?? ''
+
+    delete filters?.page
+    delete filters?.perPage
+    delete filters?.search
+
+    const where: WhereOptions<Product> = { ...cleanObject(filters || {}) }
+
+    if (search) {
+      where.name = { [Op.iLike]: `%${search}%` }
+    }
+
+    const count = await Product.count({ where })
+
+
+    const products = await Product.findAll({
+      where,
       include: [{ association: 'category' }],
-      order: [['created_at', 'DESC'],]
+      order: [['created_at', 'DESC'],],
+      offset: (page - 1) * perPage,
+      limit: perPage
     })
 
-    const aux = products.map(product => {
-      return new ListProductDTO(product).getAll()
-    })
+    const data = products.map(product => new ListProductDTO(product).getAll())
 
-    return aux as Product[]
+    const lastPage = Math.ceil(count / perPage)
+    const hasMore = page < lastPage
+    const from = count > 0 ? (page - 1) * perPage + 1 : 0
+    const to = Math.min(page * perPage, count)
+
+    return {
+      data,
+      meta: {
+        page,
+        count,
+        perPage,
+        hasMore,
+        lastPage,
+        from,
+        to
+      }
+    }
   }
 
   async getKpi(): Promise<KpiType> {
     const data = await Promise.all([
-      this.Model.sum('currentStock'),
-      this.Model.count(),
-      this.Model.count({
+      Product.sum('currentStock'),
+      Product.count(),
+      Product.count({
         where: {
           currentStock: {
             [Op.lt]: col('minimum_stock'),
           },
         },
       }),
-      this.Model.count({
+      Product.count({
         where: {
           expirationDate: {
             [Op.between]: [
@@ -138,7 +169,7 @@ export class ProductRepository extends BaseRepository<Product> {
       }),
 
       // belowMinimumStock
-      await this.Model.findAll({
+      await Product.findAll({
         where: {
           currentStock: {
             [Op.lt]: col('minimum_stock'),
@@ -217,5 +248,38 @@ export class ProductRepository extends BaseRepository<Product> {
       closeToTheExpirationDate: data[3]?.length ?? 0,
     })
     return kpi
+  }
+
+
+
+  async alter(id: number, newData: UpdateProductType, dbTransaction?: Transaction) {
+    await Product.update(cleanObject(newData), { where: { id }, ...(dbTransaction ? { transaction: dbTransaction } : {}) })
+  }
+
+  async create(newData: CreateProductType): Promise<Product> {
+    try {
+      const process = await Product.create(newData)
+      return process
+    }
+    catch (err) {
+      if (err instanceof ForeignKeyConstraintError) {
+        throw new AppError("Invalid foreign key: related record does not exist.", 400);
+      } else if (err instanceof UniqueConstraintError) {
+        throw new AppError("Duplicate value: this value must be unique.", 400);
+      } else if (err instanceof ValidationError) {
+        const messages = err.errors.map(e => e.message).join(", ");
+        throw new AppError(`Validation error: ${messages}`, 400);
+      } else if (err instanceof DatabaseError) {
+        console.error(err);
+        throw new AppError("Internal database error.", 500);
+      } else {
+        console.error(err);
+        throw new AppError("Unexpected error occurred.", 500);
+      }
+    }
+  }
+
+  async delete(id: number) {
+    await Product.destroy({ where: { id } })
   }
 }

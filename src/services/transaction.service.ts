@@ -1,30 +1,30 @@
 import sequelize from '../config/db-connection';
-import { DTO } from '../dtos/dto';
 import { CreateStockType } from '../dtos/stock/create-stock.dto';
-import { CreateTransactionType } from '../dtos/transaction/create-transaction.dto';
-import { ListTransactionDTO, ListTransactionType } from '../dtos/transaction/list-transaction.dto';
+import { CreateTransactionDTO, CreateTransactionType } from '../dtos/transaction/create-transaction.dto';
+import { FilterTransactionDTO } from '../dtos/transaction/filter-transaction.dto';
+import { ListTransactionDTO, ListTransactionsType, ListTransactionType } from '../dtos/transaction/list-transaction.dto';
+import { UpdateTransactionDTO } from '../dtos/transaction/update-transaction.dto';
 import { AppError } from '../errors/app.error';
-import Transaction from '../models/transaction.model';
 import { ProductRepository } from '../repositories/product.repository';
 import { TransactionRepository } from '../repositories/transaction.repository';
 import { calculateNewStock } from '../utils/calculateNewStock';
-import { BaseService } from './base.service';
 import { StockService } from './stock.service';
 import { TransactionLocationService } from './transaction-location.service';
 
-export class TransactionService extends BaseService<Transaction> {
+export class TransactionService {
+  private repository: TransactionRepository
   private productRepository: ProductRepository
   private transactionLocationService: TransactionLocationService
   private stockService: StockService
 
   constructor() {
-    super(new TransactionRepository())
+    this.repository = new TransactionRepository()
     this.productRepository = new ProductRepository()
     this.transactionLocationService = new TransactionLocationService()
     this.stockService = new StockService()
   }
 
-  override async create(newTransactionDTO: DTO<any>): Promise<ListTransactionType> {
+  async create(newTransactionDTO: CreateTransactionDTO): Promise<ListTransactionType> {
     const dbTransaction = await sequelize.transaction()
 
     try {
@@ -64,4 +64,30 @@ export class TransactionService extends BaseService<Transaction> {
       throw err
     }
   }
+
+  async alter(id: number, dto: UpdateTransactionDTO): Promise<void> {
+      const obj = dto.getAll()
+      await this.listById(id)
+      await this.repository.alter(id, obj)
+    }
+  
+    async delete(id: number): Promise<void> {
+      await this.listById(id)
+      await this.repository.delete(id)
+    }
+  
+    async listById(id: number): Promise<ListTransactionType> {
+      const obj = await this.repository.listById(id)
+  
+      if (!obj) {
+        throw new AppError('Object not found', 404)
+      }
+  
+      return new ListTransactionDTO(obj).getAll()
+    }
+  
+    async listAll(filter?: FilterTransactionDTO): Promise<ListTransactionsType> {
+      const objs = await this.repository.listAll(filter?.getAll())
+      return objs
+    }
 }

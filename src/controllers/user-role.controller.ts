@@ -1,19 +1,18 @@
-import { Application, Router } from 'express';
+import { Application } from 'express';
 import { CreateUserRoleDTO } from '../dtos/user-role/create-user-role.dto';
 import { FilterUserRoleDTO } from '../dtos/user-role/filter-user-role.dto';
-import { UserRolesService } from '../services/user-role.service';
+import { UserRoleService } from '../services/user-role.service';
 import { getParamsId } from '../utils/get-params-id';
 import { BaseController, EndPointType } from './base.controller';
 import { UpdateUserRoleDTO } from '../dtos/user-role/update-user-role.dto';
-import UserRole from '../models/user-role.model';
 
-export class UserRoleController extends BaseController<UserRole, UserRolesService> {
+export class UserRoleController extends BaseController<UserRoleService> {
   constructor(
     app: Application
   ) {
     super({
       app,
-      service: new UserRolesService()
+      service: new UserRoleService()
     })
   }
 
