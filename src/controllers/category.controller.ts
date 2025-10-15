@@ -1,6 +1,5 @@
 import { Application } from "express";
 import { BaseController, EndPointType } from "./base.controller";
-import Category from '../models/category.model';
 import { getParamsId } from '../utils/get-params-id';
 import { CreateCategoryDTO } from "../dtos/category/create-category.dto";
 import { FilterCategoryDTO } from "../dtos/category/filter-category.dto";
@@ -8,7 +7,7 @@ import { CategoryService } from "../services/category.service";
 import { UpdateCategoryDTO } from "../dtos/category/update-category.dto";
 
 
-export class CategoryController extends BaseController<Category, CategoryService> {
+export class CategoryController extends BaseController<CategoryService> {
   constructor(app: Application) {
     super({
       app,

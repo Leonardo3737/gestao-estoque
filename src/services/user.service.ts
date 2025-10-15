@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import { InferAttributes } from "sequelize"
 import { DTO } from "../dtos/dto"
-import { ListUserByAdminDTO, ListUserByAdminType } from "../dtos/user/list-user.dto"
+import { ListUserByAdminDTO, ListUserByAdminType, ListUsersByAdminType } from "../dtos/user/list-user.dto"
 import { CreateUserType } from "../dtos/user/create-user.dto"
 import { FilterUserType } from "../dtos/user/filter-user.dto"
 import { UpdateUserType } from "../dtos/user/update-user.dto"
@@ -11,16 +11,15 @@ import User from "../models/user.model"
 import { UserRepository } from "../repositories/user.repository"
 import { encryptPassword } from "../utils/encrypt"
 import { genJWT } from "../utils/jwt"
-import { BaseService } from "./base.service"
 
 // THIS SERVICE IS AVAILABLE ONLY FOR ADMIN
-export class UserService extends BaseService<User> {
-
+export class UserService {
+  private repository
   constructor() {
-    super(new UserRepository())
+    this.repository = new UserRepository()
   }
 
-  override async create(newUser: DTO<any>): Promise<ListUserByAdminType> {
+  async create(newUser: DTO<any>): Promise<ListUserByAdminType> {
     const user: CreateUserType = newUser.getAll()
 
     await this.checkConflict(user.phone, user.register)
@@ -30,7 +29,7 @@ export class UserService extends BaseService<User> {
     return new ListUserByAdminDTO(res).getAll()
   }
 
-  override async alter(userId: number, newUser: DTO<any>): Promise<void> {
+  async alter(userId: number, newUser: DTO<any>): Promise<void> {
 
     const user: UpdateUserType = newUser.getAll()
 
@@ -40,7 +39,7 @@ export class UserService extends BaseService<User> {
   }
 
 
-  override async listById(id: number): Promise<ListUserByAdminType> {
+  async listById(id: number): Promise<ListUserByAdminType> {
     const user = await this.repository.listById(id)
 
     if (!user) {
@@ -53,19 +52,13 @@ export class UserService extends BaseService<User> {
   }
 
 
-  override async listAll(filters?: DTO<any>): Promise<ListUserByAdminType[]> {
+  async listAll(filters?: DTO<any>): Promise<ListUsersByAdminType> {
 
     const auxFilter: FilterUserType = filters?.getAll()
 
     const users = await this.repository.listAll(auxFilter)
 
-    if (!users) {
-      throw new AppError('User not found', 404)
-    }
-
-    const userWithoutPassword = users.map(user => new ListUserByAdminDTO(user).getAll())
-
-    return userWithoutPassword
+    return users
   }
 
   async userAuth(auth: UserAuthDTO): Promise<string> {
@@ -92,7 +85,7 @@ export class UserService extends BaseService<User> {
     if (phone) {
       const userWithSamephone = await this.repository.listAll({ phone })
 
-      if (userWithSamephone?.length) {
+      if (userWithSamephone?.data.length) {
         throw new AppError('There is already a user with this phone', 409)
       }
     }
@@ -100,10 +93,14 @@ export class UserService extends BaseService<User> {
     if (register) {
       const userWithSameRegister = await this.repository.listAll({ register })
 
-      if (userWithSameRegister?.length) {
+      if (userWithSameRegister?.data.length) {
         throw new AppError('There is already a user with this register', 409)
       }
     }
+  }
 
+  async delete(id: number): Promise<void> {
+    await this.listById(id)
+    await this.repository.delete(id)
   }
 }

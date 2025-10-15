@@ -1,8 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/db-connection";
-import { CreateRequestType, RequestType } from "../dtos/request/request.schema";
+import { RequestType } from "../dtos/request/request.schema";
 import { ListUserByAdminType } from '../dtos/user/list-user.dto';
 import User from './user.model';
+import { CreateRequestType } from "../dtos/request/create-request.schema";
 
 class Request extends Model<RequestType, CreateRequestType> {
   declare id: number

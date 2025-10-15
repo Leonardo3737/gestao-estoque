@@ -1,14 +1,13 @@
 import { Application } from "express";
 import { BaseController, EndPointType } from "./base.controller";
 import { AisleService } from '../services/aisle.service';
-import Aisle from '../models/aisle.model';
 import { CreateAisleDTO } from '../dtos/aisle/create-aisle.dto';
 import { FilterAisleDTO } from '../dtos/aisle/filter-aisle.dto';
 import { UpdateAisleDTO } from '../dtos/aisle/update-aisle.dto';
 import { getParamsId } from '../utils/get-params-id';
 
 
-export class AisleController extends BaseController<Aisle, AisleService> {
+export class AisleController extends BaseController<AisleService> {
   constructor(app: Application) {
     super({
       app,

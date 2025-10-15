@@ -1,8 +1,9 @@
 import z from "zod";
 import { CategorySchema } from "./category.schema";
 import { DTO } from "../dto";
+import { FilterSchema } from "../util/filter.schema";
 
-export const FilterCategorySchema = CategorySchema.partial()
+export const FilterCategorySchema = FilterSchema(CategorySchema)
 
 export type FilterCategoryType = z.infer<typeof FilterCategorySchema>
 

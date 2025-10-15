@@ -1,15 +1,13 @@
-import { Application, Request, Response, Router } from "express";
+import { Application, Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { CreateUserDTO } from "../dtos/user/create-user.dto";
 import { UserAuthDTO } from "../dtos/user/user-auth.dto";
-import { AppError } from "../errors/app.error";
 import { getParamsId } from "../utils/get-params-id";
 import { UpdateUserDTO } from "../dtos/user/update-user.dto";
 import { FilterUserDTO } from "../dtos/user/filter-user.dto";
 import { BaseController, EndPointType } from "./base.controller";
-import User from "../models/user.model";
 
-export class UserController extends BaseController<User, UserService> {
+export class UserController extends BaseController<UserService> {
 
   constructor(
     app: Application

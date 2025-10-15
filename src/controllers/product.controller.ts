@@ -1,6 +1,5 @@
 import { Application } from "express";
 import { BaseController, EndPointType } from "./base.controller";
-import Product from '../models/product.model';
 import { getParamsId } from '../utils/get-params-id';
 import { CreateProductDTO } from "../dtos/product/create-product.dto";
 import { FilterProductDTO } from "../dtos/product/filter-product.dto";
@@ -8,7 +7,7 @@ import { ProductService } from "../services/product.service";
 import { UpdateProductDTO } from "../dtos/product/update-product.dto";
 
 
-export class ProductController extends BaseController<Product, ProductService> {
+export class ProductController extends BaseController<ProductService> {
   constructor(app: Application) {
     super({
       app,

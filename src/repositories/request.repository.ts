@@ -1,46 +1,71 @@
-import { RequestDTO } from '../dtos/request/request.schema';
+import { WhereOptions } from 'sequelize';
+import { ListRequestDTO, ListRequestsType, ListRequestType } from '../dtos/request/list-request.schema copy 3';
 import Request from '../models/request.model';
-import { BaseRepository } from './base.repository';
+import { cleanObject } from '../utils/cleanObject';
 
-export class RequestRepository extends BaseRepository<Request> {
-  constructor() {
-    super(Request)
-  }
+export class RequestRepository {
 
-  async listById(id: number): Promise<Request | null> {
-    const request = await this.Model.findByPk(
+  async listById(id: number): Promise<ListRequestType | null> {
+    const request = await Request.findByPk(
       id,
       {
         include: [
           {
             association: 'user',
-            include: [ { association: 'roles' } ]
+            include: [{ association: 'roles' }]
           }
         ]
       }
     )
-    return request ? new RequestDTO(request).getAll() as Request : null
+    return request ? new ListRequestDTO(request).getAll() : null
   }
 
-  async listAll(filters?: any): Promise<Request[]> {
+  async listAll(filters?: any): Promise<ListRequestsType> {
 
-    const requesties = await this.Model.findAll({
-      where: {
-        ...filters
-      },
+    const page = filters?.page ?? 1
+    const perPage = filters?.perPage ?? 10
+
+    delete filters?.page
+    delete filters?.perPage
+    delete filters?.search
+
+    const where: WhereOptions<Request> = { ...cleanObject(filters || {}) }
+
+    // Conta total de registros
+    const count = await Request.count({ where })
+
+    const results = await Request.findAll({
+      where,
       include: [
         {
           association: 'user',
-          include: [ { association: 'roles' } ]
+          include: [{ association: 'roles' }]
         }
       ],
-      order: [ [ 'created_at', 'DESC' ], ]
+      order: [['created_at', 'DESC'],],
+      offset: (page - 1) * perPage,
+      limit: perPage
     })
 
-    const aux = requesties.map(request => {
-      return new RequestDTO(request).getAll()
-    })
+    const data = results.map(item => new ListRequestDTO(item).getAll())
 
-    return aux as Request[]
+    const lastPage = Math.ceil(count / perPage)
+    const hasMore = page < lastPage
+    const from = count > 0 ? (page - 1) * perPage + 1 : 0
+    const to = Math.min(page * perPage, count)
+
+
+    return {
+      data,
+      meta: {
+        page,
+        count,
+        perPage,
+        hasMore,
+        lastPage,
+        from,
+        to
+      }
+    }
   }
 }

@@ -2,8 +2,6 @@ import { Application, RequestHandler, Router } from "express";
 import { rolesMiddleware } from "../middlewares/roles.middleware";
 import { RolesEnum } from "../enums/roles.enum";
 import { authMiddleware } from "../middlewares/auth.middleware";
-import { BaseService } from "../services/base.service";
-import { Model } from "sequelize";
 
 export type EndPointType = {
   method: 'post' | 'put' | 'delete' | 'patch' | 'get'
@@ -12,10 +10,7 @@ export type EndPointType = {
 }
 
 
-export abstract class BaseController<
-  TModel extends Model,
-  TService extends BaseService<TModel>
-> {
+export abstract class BaseController<TService> {
 
   protected service: TService
 

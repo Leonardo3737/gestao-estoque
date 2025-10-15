@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { DTO } from "../dto";
 import { UserSchema } from "./user.schema";
+import { ResponseSchema } from "../util/response.schema";
 
 export const ListUserSchema = UserSchema.omit({
   password: true,
@@ -25,5 +26,15 @@ export type ListUserByAdminType = z.infer<typeof ListUserByAdminSchema>
 export class ListUserByAdminDTO extends DTO<typeof ListUserByAdminSchema> {
   protected rules() {
     return ListUserByAdminSchema
+  }
+}
+
+export const ListUsersByAdminSchema = ResponseSchema(ListUserByAdminSchema)
+
+export type ListUsersByAdminType = z.infer<typeof ListUsersByAdminSchema>
+
+export class ListUsersByAdminDTO extends DTO<typeof ListUsersByAdminSchema> {
+  protected rules() {
+    return ListUsersByAdminSchema
   }
 }

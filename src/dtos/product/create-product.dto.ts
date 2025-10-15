@@ -9,7 +9,6 @@ export const CreateProductSchema = ProductSchema.omit({
   createdAt: true,
   updatedAt: true,
   deletedAt: true,
-  currentStock: true,
 })
 
 export type CreateProductType = z.infer<typeof CreateProductSchema>

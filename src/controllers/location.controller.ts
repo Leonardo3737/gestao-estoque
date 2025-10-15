@@ -5,10 +5,9 @@ import { UpdateLocationDTO } from '../dtos/location/update-location.dto'
 import { LocationService } from '../services/location.service'
 import { getParamsId } from '../utils/get-params-id'
 import { BaseController, EndPointType } from './base.controller'
-import Location from '../models/location.model'
 
 
-export class LocationController extends BaseController<Location, LocationService> {
+export class LocationController extends BaseController<LocationService> {
   constructor(app: Application) {
     super({
       app,

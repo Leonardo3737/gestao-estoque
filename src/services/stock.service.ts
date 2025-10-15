@@ -1,15 +1,49 @@
 import { Transaction } from 'sequelize';
-import { CreateStockType } from '../dtos/stock/create-stock.dto';
+import { CreateStockDTO, CreateStockType } from '../dtos/stock/create-stock.dto';
+import { FilterStockDTO } from '../dtos/stock/filter-stock.dto';
+import { ListStockDTO, ListStocksType, ListStockType } from '../dtos/stock/list-stock.dto';
+import { UpdateStockDTO } from '../dtos/stock/update-stock.dto';
 import { TransactionTypeEnum } from '../enums/transaction-type.enum';
 import { AppError } from '../errors/app.error';
-import Stock from '../models/stock.model';
-import { StockRepository } from '../repositories/stock.repository';
+import { StockRepository } from "../repositories/stock.repository";
 import { calculateNewStock } from '../utils/calculateNewStock';
-import { BaseService } from './base.service';
 
-export class StockService extends BaseService<Stock> {
+export class StockService  {
+repository
   constructor() {
-    super(new StockRepository())
+    this.repository = new StockRepository()
+  }
+
+  async create(dto: CreateStockDTO): Promise<ListStockType> {
+    const obj = dto.getAll()
+    const newStock = await this.repository.create(obj)
+    return new ListStockDTO(newStock).getAll()
+  }
+
+  async alter(id: number, dto: UpdateStockDTO): Promise<void> {
+    const obj = dto.getAll()
+    await this.listById(id)
+    await this.repository.alter(id, obj)
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.listById(id)
+    await this.repository.delete(id)
+  }
+
+  async listById(id: number): Promise<ListStockType> {
+    const obj = await this.repository.listById(id)
+
+    if (!obj) {
+      throw new AppError('Object not found', 404)
+    }
+
+    return new ListStockDTO(obj).getAll()
+  }
+
+  async listAll(filter?: FilterStockDTO): Promise<ListStocksType> {
+    const objs = await this.repository.listAll(filter?.getAll())
+    return objs
   }
 
   async executeTransactions(solicitations: CreateStockType[], transactioType: TransactionTypeEnum, dbTransaction: Transaction) {
@@ -20,7 +54,7 @@ export class StockService extends BaseService<Stock> {
         locationId: solicitation.locationId
       })
 
-      const stock = stocks[ 0 ]
+      const stock = stocks.data[ 0 ]
 
       if (
         transactioType === TransactionTypeEnum.OUTGOING && (

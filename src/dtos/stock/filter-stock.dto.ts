@@ -1,8 +1,9 @@
 import z from 'zod';
 import { DTO } from '../dto';
 import { StockSchema } from './stock.schema';
+import { FilterSchema } from '../util/filter.schema';
 
-export const FilterStockSchema = StockSchema.partial()
+export const FilterStockSchema = FilterSchema(StockSchema)
 
 export type FilterStockType = z.infer<typeof FilterStockSchema>
 

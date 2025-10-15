@@ -2,12 +2,11 @@ import { Application } from "express";
 import { BaseController, EndPointType } from "./base.controller";
 import { CreateWarehouseDTO } from "../dtos/warehouse/create-warehouse.dto";
 import { WarehouseService } from "../services/warehouse.service";
-import Warehouse from '../models/warehouse.model';
 import { getParamsId } from '../utils/get-params-id';
 import { UpdateWarehouseDTO } from '../dtos/warehouse/update-warehouse.dto';
 import { FilterWarehouseDTO } from '../dtos/warehouse/filter-warehouse.dto';
 
-export class WarehouseController extends BaseController<Warehouse, WarehouseService> {
+export class WarehouseController extends BaseController<WarehouseService> {
   constructor(app: Application) {
     super({
       app,

@@ -2,8 +2,9 @@
 import z from 'zod';
 import { DTO } from '../dto';
 import { UserRoleSchema } from './user-role.schema';
+import { FilterSchema } from '../util/filter.schema';
 
-export const FilterUserRoleSchema = UserRoleSchema.partial()
+export const FilterUserRoleSchema = FilterSchema(UserRoleSchema)
 
 export type FilterUserRoleType = z.infer<typeof FilterUserRoleSchema>
 
