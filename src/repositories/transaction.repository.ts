@@ -53,6 +53,7 @@ export class TransactionRepository {
     const transactions = await TransactionModel.findAll({
       where,
       include: [
+        { association: 'user' },
         { association: 'product' },
         { association: 'warehouse' }
       ],

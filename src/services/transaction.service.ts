@@ -5,6 +5,7 @@ import { FilterTransactionDTO } from '../dtos/transaction/filter-transaction.dto
 import { ListTransactionDTO, ListTransactionsType, ListTransactionType } from '../dtos/transaction/list-transaction.dto';
 import { UpdateTransactionDTO } from '../dtos/transaction/update-transaction.dto';
 import { AppError } from '../errors/app.error';
+import { LocationRepository } from '../repositories/location.repository';
 import { ProductRepository } from '../repositories/product.repository';
 import { TransactionRepository } from '../repositories/transaction.repository';
 import { calculateNewStock } from '../utils/calculateNewStock';
@@ -29,26 +30,21 @@ export class TransactionService {
 
     try {
       const newTransaction = newTransactionDTO.getAll() as CreateTransactionType
-      
-      const stockSolicitations: CreateStockType[] = newTransaction.createTransactionLocations.map(tl => ({
-        productId: newTransaction.productId,
-        locationId: tl.locationId,
-        currentStock: tl.quantity
-      }))
-      
+
       const product = await this.productRepository.listById(newTransaction.productId)
 
       if (!product) {
-        throw new AppError('product not found', 404)
+        throw new AppError('Product not found.', 404)
       }
 
-      await this.stockService.executeTransactions(stockSolicitations, newTransaction.type, dbTransaction)
+      let transactionAmount = await this.stockService.executeTransactions(newTransaction, dbTransaction)
 
-      const transaction = await this.repository.create(newTransaction, dbTransaction)
-
+      const transaction = await this.repository.create({...newTransaction, totalQuantity: transactionAmount}, dbTransaction)
+      
       const globalCurrentStock = product.currentStock || 0
-
-      let transactionAmount = await this.transactionLocationService.executeTransactions(newTransaction.createTransactionLocations, transaction.id, dbTransaction)
+      
+    
+      await this.transactionLocationService.executeTransactions(newTransaction.createTransactionLocations, transaction.id, dbTransaction)
 
 
       await this.productRepository.alter(newTransaction.productId, {
@@ -66,28 +62,28 @@ export class TransactionService {
   }
 
   async alter(id: number, dto: UpdateTransactionDTO): Promise<void> {
-      const obj = dto.getAll()
-      await this.listById(id)
-      await this.repository.alter(id, obj)
+    const obj = dto.getAll()
+    await this.listById(id)
+    await this.repository.alter(id, obj)
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.listById(id)
+    await this.repository.delete(id)
+  }
+
+  async listById(id: number): Promise<ListTransactionType> {
+    const obj = await this.repository.listById(id)
+
+    if (!obj) {
+      throw new AppError('Object not found', 404)
     }
-  
-    async delete(id: number): Promise<void> {
-      await this.listById(id)
-      await this.repository.delete(id)
-    }
-  
-    async listById(id: number): Promise<ListTransactionType> {
-      const obj = await this.repository.listById(id)
-  
-      if (!obj) {
-        throw new AppError('Object not found', 404)
-      }
-  
-      return new ListTransactionDTO(obj).getAll()
-    }
-  
-    async listAll(filter?: FilterTransactionDTO): Promise<ListTransactionsType> {
-      const objs = await this.repository.listAll(filter?.getAll())
-      return objs
-    }
+
+    return new ListTransactionDTO(obj).getAll()
+  }
+
+  async listAll(filter?: FilterTransactionDTO): Promise<ListTransactionsType> {
+    const objs = await this.repository.listAll(filter?.getAll())
+    return objs
+  }
 }

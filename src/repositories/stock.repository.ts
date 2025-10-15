@@ -22,12 +22,12 @@ export class StockRepository {
 
     const page = filters?.page ?? 1
     const perPage = filters?.perPage ?? 10
-    
+
     delete filters?.page
     delete filters?.perPage
     delete filters?.search
 
-    const where: WhereOptions<Stock> = {...cleanObject(filters || {})}
+    const where: WhereOptions<Stock> = { ...cleanObject(filters || {}) }
 
     // Conta total de registros
     const count = await Stock.count({ where })
@@ -35,6 +35,21 @@ export class StockRepository {
     const results = await Stock.findAll({
       where,
       order: [['created_at', 'DESC']],
+      include: [
+        {
+          association: 'location',
+          include: [
+            {
+              association: 'aisle',
+              include: [
+                {
+                  association: 'warehouse'
+                }
+              ]
+            }
+          ]
+        }
+      ],
       offset: (page - 1) * perPage,
       limit: perPage
     })
@@ -66,7 +81,7 @@ export class StockRepository {
 
   async create(newData: CreateStockType, dbTransaction?: Transaction): Promise<Stock> {
     try {
-      const process = await Stock.create(newData, (dbTransaction ? {transaction: dbTransaction} : {}))
+      const process = await Stock.create(newData, (dbTransaction ? { transaction: dbTransaction } : {}))
       return process
     }
     catch (err) {

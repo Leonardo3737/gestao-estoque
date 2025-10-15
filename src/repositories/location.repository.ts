@@ -1,4 +1,4 @@
-import { DatabaseError, ForeignKeyConstraintError, UniqueConstraintError, ValidationError } from "sequelize";
+import { DatabaseError, ForeignKeyConstraintError, Transaction, UniqueConstraintError, ValidationError } from "sequelize";
 import { FilterLocationType } from "../dtos/location/filter-location.dto";
 import { ListLocationDTO, ListLocationsType } from "../dtos/location/list-location.dto";
 import Location from "../models/location.model";
@@ -82,9 +82,9 @@ export class LocationRepository {
     await Location.update(cleanObject(newData), { where: { id } })
   }
 
-  async create(newData: CreateLocationType): Promise<Location> {
+  async create(newData: CreateLocationType, dbTransaction?: Transaction): Promise<Location> {
     try {
-      const process = await Location.create(newData)
+      const process = await Location.create(newData, (dbTransaction ? {transaction: dbTransaction} : {}))
       return process
     }
     catch (err) {

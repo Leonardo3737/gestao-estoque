@@ -9,6 +9,7 @@ export const TransactionSchema = z.object({
   id: z.number(),
   productId: z.coerce.number(),
   product: ProductSchema.optional(),
+  totalQuantity: z.coerce.number(),
   userId: z.coerce.number(),
   user: ListUserSchema.optional(),
   get transactionLocations() {

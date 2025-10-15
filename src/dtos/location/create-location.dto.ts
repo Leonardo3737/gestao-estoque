@@ -6,6 +6,9 @@ import { LocationSchema } from "./location.schema";
 export const CreateLocationSchema = LocationSchema.omit({
   id: true,
   createdAt: true,
+  transactionLocations: true,
+  stock: true,
+  aisle: true,
   updatedAt: true,
   deletedAt: true,
 })
