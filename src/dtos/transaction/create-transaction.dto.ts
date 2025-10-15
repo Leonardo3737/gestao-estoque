@@ -8,6 +8,7 @@ export const CreateTransactionSchema = TransactionSchema.omit({
   user: true,
   product: true,
   transactionLocations: true,
+  warehouse: true,
   createdAt: true,
   updatedAt: true,
   deletedAt: true,

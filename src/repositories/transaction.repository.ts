@@ -52,7 +52,10 @@ export class TransactionRepository {
 
     const transactions = await TransactionModel.findAll({
       where,
-      include: [{ association: 'product' }],
+      include: [
+        { association: 'product' },
+        { association: 'warehouse' }
+      ],
       order: [['created_at', 'DESC'],],
       offset: (page - 1) * perPage,
       limit: perPage
