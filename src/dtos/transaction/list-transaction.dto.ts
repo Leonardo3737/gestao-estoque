@@ -13,7 +13,7 @@ export class ListTransactionDTO extends DTO<typeof ListTransactionSchema> {
   }
 }
 
-export const ListTransactionsSchema = ResponseSchema(TransactionSchema)
+export const ListTransactionsSchema = ResponseSchema(ListTransactionSchema)
 
 export type ListTransactionsType = z.infer<typeof ListTransactionsSchema>
 

@@ -23,6 +23,18 @@ export class UserRoleController extends BaseController<UserRoleService> {
   protected adminEndPoints(): EndPointType[] {
     return [
       {
+        path: '',
+        method: 'post',
+        handle: async (req, res) => {
+          const data = new CreateUserRoleDTO(req.body)
+
+          const newRole = await this.service.create(data)
+
+          res.locals.responseData = newRole
+          res.status(201).send(newRole)
+        }
+      },
+      {
         path: '/',
         method: 'get',
         handle: async (req, res) => {
@@ -49,23 +61,6 @@ export class UserRoleController extends BaseController<UserRoleService> {
           const id = getParamsId(req)
           await this.service.delete(id)
           res.status(204).send()
-        }
-      },
-    ]
-  }
-
-  protected publicEndPoints(): EndPointType[] {
-    return [
-      {
-        path: '',
-        method: 'post',
-        handle: async (req, res) => {
-          const data = new CreateUserRoleDTO(req.body)
-
-          const newRole = await this.service.create(data)
-
-          res.locals.responseData = newRole
-          res.status(201).send(newRole)
         }
       },
     ]
