@@ -3,7 +3,7 @@ import { FilterCategoryDTO } from '../dtos/category/filter-category.dto';
 import { ListCategoriesType, ListCategoryDTO, ListCategoryType } from '../dtos/category/list-category.dto';
 import { UpdateCategoryDTO } from '../dtos/category/update-category.dto';
 import { AppError } from '../errors/app.error';
-import { CategoryRepository } from '../repositories/cotegory.repository';
+import { CategoryRepository } from '../repositories/category.repository';
 
 export class CategoryService {
   repository

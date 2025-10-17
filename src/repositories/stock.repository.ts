@@ -12,7 +12,25 @@ export class StockRepository {
     const stock = await Stock.findByPk(
       id,
       {
-        include: [{ association: 'warehouse' }]
+        include: [
+          {
+            association: 'location',
+            include: [
+              {
+                association: 'aisle',
+                include: [
+                  {
+                    association: 'warehouse'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            association: 'product',
+            include: [{ association: 'category' }]
+          }
+        ]
       }
     )
     return stock ? new ListStockDTO(stock).getAll() : null
@@ -48,6 +66,10 @@ export class StockRepository {
               ]
             }
           ]
+        },
+        {
+          association: 'product',
+          include: [{ association: 'category' }]
         }
       ],
       offset: (page - 1) * perPage,
