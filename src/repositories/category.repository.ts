@@ -9,12 +9,7 @@ import { ListCategoriesType, ListCategoryDTO } from "../dtos/category/list-categ
 
 export class CategoryRepository {
   async listById(id: number): Promise<Category | null> {
-    const transaction = await Category.findByPk(
-      id,
-      {
-        include: [{ association: 'warehouse' }]
-      }
-    )
+    const transaction = await Category.findByPk(id)
     return transaction ? new ListCategoryDTO(transaction).getAll() as Category : null
   }
 
