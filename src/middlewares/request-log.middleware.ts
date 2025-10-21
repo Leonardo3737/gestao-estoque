@@ -10,7 +10,7 @@ export function requestLogMiddleware(req: Request, res: Response, next: NextFunc
         method: req.method,
         endpoint: req.originalUrl,
         statusCode: res.statusCode,
-        body: req.body,
+        body: req.originalUrl !== '/user/auth' ? req.body : null,
         response: res.locals?.responseData,
         ipAddress: req.ip,
         userId: req.user?.sub
@@ -21,7 +21,7 @@ export function requestLogMiddleware(req: Request, res: Response, next: NextFunc
         method: req.method,
         endpoint: req.originalUrl,
         statusCode: res.statusCode,
-        body: req.body,
+        body: req.originalUrl !== '/user/auth' ? req.body : null,
         response: res.locals?.responseData,
         ipAddress: req.ip,
       });
