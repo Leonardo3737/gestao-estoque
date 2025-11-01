@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt'
 import { InferAttributes } from "sequelize"
 import { DTO } from "../dtos/dto"
-import { ListUserByAdminDTO, ListUserByAdminType, ListUsersByAdminType } from "../dtos/user/list-user.dto"
 import { CreateUserType } from "../dtos/user/create-user.dto"
 import { FilterUserType } from "../dtos/user/filter-user.dto"
+import { ListUserByAdminDTO, ListUserByAdminType, ListUsersByAdminType } from "../dtos/user/list-user.dto"
 import { UpdateUserType } from "../dtos/user/update-user.dto"
 import { UserAuthDTO } from "../dtos/user/user-auth.dto"
 import { AppError } from "../errors/app.error"
@@ -22,7 +22,7 @@ export class UserService {
   async create(newUser: DTO<any>): Promise<ListUserByAdminType> {
     const user: CreateUserType = newUser.getAll()
 
-    await this.checkConflict(user.phone, user.register)
+    await this.checkConflict(user.register)
 
     user.password = await encryptPassword(user.password)
     const res = await this.repository.create(user)
@@ -33,7 +33,7 @@ export class UserService {
 
     const user: UpdateUserType = newUser.getAll()
 
-    await this.checkConflict(user.phone, user.register)
+    await this.checkConflict(user.register)
 
     await this.repository.alter(userId, user as Partial<InferAttributes<User>>)
   }
@@ -81,15 +81,7 @@ export class UserService {
     return token
   }
 
-  private async checkConflict(phone?: string, register?: string) {
-    if (phone) {
-      const userWithSamephone = await this.repository.listAll({ phone })
-
-      if (userWithSamephone?.data.length) {
-        throw new AppError('There is already a user with this phone', 409)
-      }
-    }
-
+  private async checkConflict(register?: string) {
     if (register) {
       const userWithSameRegister = await this.repository.listAll({ register })
 
