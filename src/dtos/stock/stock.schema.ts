@@ -1,16 +1,16 @@
 import z from 'zod';
-import { ProductSchema } from '../product/product.schema';
 import { LocationSchema } from '../location/location.schema';
+import { ProductSchema } from '../product/product.schema';
 
 export const StockSchema = z.object({
   id: z.coerce.number().int(),
   productId: z.coerce.number().int(),
   get product() {
-    return ProductSchema.optional()
+    return ProductSchema.optional().nullable()
   },
   locationId: z.coerce.number().int(),
   get location() {
-    return LocationSchema.optional()
+    return LocationSchema.optional().nullable()
   },
   currentStock: z.coerce.number().int(),
   createdAt: z.date(),

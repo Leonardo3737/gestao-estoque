@@ -1,11 +1,11 @@
-import { DatabaseError, ForeignKeyConstraintError, Op, Transaction, UniqueConstraintError, ValidationError, WhereOptions } from "sequelize";
+import { DatabaseError, ForeignKeyConstraintError, Transaction, UniqueConstraintError, ValidationError, WhereOptions } from "sequelize";
 import { CreateStockType } from "../dtos/stock/create-stock.dto";
 import { FilterStockType } from "../dtos/stock/filter-stock.dto";
+import { ListStockDTO, ListStocksType, ListStockType } from "../dtos/stock/list-stock.dto";
 import { UpdateStockType } from "../dtos/stock/update-stock.dto";
+import { AppError } from "../errors/app.error";
 import Stock from "../models/stock.model";
 import { cleanObject } from "../utils/cleanObject";
-import { AppError } from "../errors/app.error";
-import { ListStockDTO, ListStocksType, ListStockType } from "../dtos/stock/list-stock.dto";
 
 export class StockRepository {
   async listById(id: number): Promise<ListStockType | null> {
@@ -28,7 +28,7 @@ export class StockRepository {
           },
           {
             association: 'product',
-            include: [{ association: 'category' }]
+            include: [ { association: 'category' } ]
           }
         ]
       }
@@ -40,28 +40,61 @@ export class StockRepository {
 
     const page = filters?.page ?? 1
     const perPage = filters?.perPage ?? 10
+    const warehouseId = filters?.warehouseId
+    const aisleId = filters?.aisleId
 
     delete filters?.page
     delete filters?.perPage
     delete filters?.search
+    delete filters?.warehouseId
+    delete filters?.aisleId
 
     const where: WhereOptions<Stock> = { ...cleanObject(filters || {}) }
 
     // Conta total de registros
-    const count = await Stock.count({ where })
-
-    const results = await Stock.findAll({
+    const count = await Stock.count({
       where,
-      order: [['created_at', 'DESC']],
+      distinct: true,
+      col: 'id',
       include: [
         {
           association: 'location',
+          required: true,
           include: [
             {
               association: 'aisle',
+              required: !!aisleId || !!warehouseId,
+              where: aisleId ? { id: aisleId } : {},
               include: [
                 {
-                  association: 'warehouse'
+                  association: 'warehouse',
+                  required: !!warehouseId,
+                  where: warehouseId ? { id: warehouseId } : {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    });
+
+    const results = await Stock.findAll({
+      where,
+      order: [ [ 'created_at', 'DESC' ] ],
+      include: [
+        {
+          association: 'location',
+          required: true,
+          include: [
+            {
+              association: 'aisle',
+              required: !!aisleId || !!warehouseId,
+              where: aisleId ? { id: aisleId } : {},
+              include: [
+                {
+                  association: 'warehouse',
+                  required: !!warehouseId,
+                  where: warehouseId ? { id: warehouseId } : {}
                 }
               ]
             }
@@ -69,7 +102,7 @@ export class StockRepository {
         },
         {
           association: 'product',
-          include: [{ association: 'category' }]
+          include: [ { association: 'category' } ]
         }
       ],
       offset: (page - 1) * perPage,
