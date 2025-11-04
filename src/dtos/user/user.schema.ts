@@ -3,7 +3,7 @@ import { isValidCPF } from "../../utils/validate-cpf";
 import { UserRoleSchema } from "../user-role/user-role.schema";
 
 export const UserSchema = z.object({
-  id: z.number(),
+  id: z.coerce.number(),
   name: z.string().min(2).max(100),
   phone: z.string().refine(value => !(
     isNaN(Number(value)) ||

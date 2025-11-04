@@ -4,7 +4,7 @@ import { ListStockByLocationSchema } from '../stock/list-stock.dto';
 import { TransactionLocationSchema } from '../transaction-location/transaction-location.schema';
 
 export const LocationSchema = z.object({
-  id: z.number(),
+  id: z.coerce.number(),
   aisleId: z.coerce.number(),
   aisle: AisleSchema.optional(),
   shelf: z.string().min(1).max(40),

@@ -4,7 +4,7 @@ import { LocationSchema } from "../location/location.schema";
 import { TransactionSchema } from "../transaction/transaction.schema";
 
 export const TransactionLocationSchema = z.object({
-  id: z.number(),
+  id: z.coerce.number(),
   transactionId: z.coerce.number(),
   get transaction(): z.ZodOptional<z.ZodNullable<typeof TransactionSchema>> {
     return z.nullable(TransactionSchema).optional()
@@ -13,7 +13,7 @@ export const TransactionLocationSchema = z.object({
   get location(): z.ZodOptional<z.ZodNullable<typeof LocationSchema>> {
     return z.nullable(LocationSchema).optional()
   },
-  quantity: z.number(),
+  quantity: z.coerce.number(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date().nullable(),
   deletedAt: z.coerce.date().nullable(),

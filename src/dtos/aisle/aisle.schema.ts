@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { WarehouseSchema } from '../warehouse/warehouse.schema';
 
 export const AisleSchema = z.object({
-  id: z.number(),
+  id: z.coerce.number(),
   warehouseId: z.coerce.number(),
   warehouse: WarehouseSchema.optional(),
   name: z.string().min(1).max(40),
