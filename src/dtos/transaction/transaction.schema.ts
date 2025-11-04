@@ -6,7 +6,7 @@ import { ListUserSchema } from "../user/list-user.dto";
 import { WarehouseSchema } from "../warehouse/warehouse.schema";
 
 export const TransactionSchema = z.object({
-  id: z.number(),
+  id: z.coerce.number(),
   productId: z.coerce.number(),
   product: ProductSchema.optional(),
   totalQuantity: z.coerce.number(),

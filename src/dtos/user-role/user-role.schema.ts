@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { RolesEnum } from '../../enums/roles.enum';
 
 export const UserRoleSchema = z.object({
-  id: z.number(),
+  id: z.coerce.number(),
   userId: z.coerce.number(),
   role: z.enum(RolesEnum),
   createdAt: z.date().nullable(),

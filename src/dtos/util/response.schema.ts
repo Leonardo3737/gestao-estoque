@@ -5,12 +5,12 @@ export const ResponseSchema = <DataType extends ZodRawShape>(Schema: ZodObject<D
   z.object({
     data: z.array(Schema),
     meta: z.object({
-      page: z.number(),
-      count: z.number(),
-      perPage: z.number(),
+      page: z.coerce.number(),
+      count: z.coerce.number(),
+      perPage: z.coerce.number(),
       hasMore: z.boolean(),
-      lastPage: z.number(),
-      from: z.number(),
-      to: z.number(),
+      lastPage: z.coerce.number(),
+      from: z.coerce.number(),
+      to: z.coerce.number(),
     })
   })
