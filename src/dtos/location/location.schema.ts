@@ -6,10 +6,10 @@ import { TransactionLocationSchema } from '../transaction-location/transaction-l
 export const LocationSchema = z.object({
   id: z.coerce.number(),
   aisleId: z.coerce.number(),
-  aisle: AisleSchema.optional(),
+  aisle: AisleSchema.optional().nullable(),
   shelf: z.string().min(1).max(40),
   side: z.string().min(1).max(40),
-  transactionLocations: z.lazy(() => z.array(TransactionLocationSchema)).optional(),
+  transactionLocations: z.lazy(() => z.array(TransactionLocationSchema)).optional().nullable(),
   get stock() {
     return z.array(ListStockByLocationSchema).optional()
   },
