@@ -12,7 +12,7 @@ export const UserSchema = z.object({
   ), { message: 'Invalid phone number' }),
   register: z.string().refine(isValidCPF, { message: 'Invalid CPF.' }),
   password: z.string().min(6).max(100),
-  roles: z.lazy(() => z.array(UserRoleSchema)).optional(),
+  roles: z.lazy(() => z.array(UserRoleSchema)).optional().nullable(),
   createdAt: z.date(),
   updatedAt: z.date().nullable(),
   deletedAt: z.date().nullable(),

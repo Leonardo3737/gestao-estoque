@@ -5,9 +5,9 @@ import { ListStockByProductSchema } from '../stock/list-stock.dto';
 export const ProductSchema = z.object({
   id: z.coerce.number(),
   name: z.string().min(1).max(100),
-  description: z.string().min(1).max(255).optional(),
+  description: z.string().min(1).max(255).optional().nullable(),
   categoryId: z.coerce.number(),
-  category: CategorySchema.optional(),
+  category: CategorySchema.optional().nullable(),
   get stock() {
     return z.array(ListStockByProductSchema).optional()
   },
